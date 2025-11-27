@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Georgia.ttf",
+      "sha1": "c093a9eabcf4e3c233afef89285f1662798d2086"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans.ttf",
+      "sha1": "8c01360cd531b3c1988d314db01656c8ef45207c"
+    }
+  ]
+}
