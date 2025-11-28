@@ -148,7 +148,7 @@ const DetailsCarousel = ({ books, onBookChange, initialBookId }: any) => {
 
 const styles = StyleSheet.create({
   headerBackground: {
-    height: 480,
+    height: 456,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

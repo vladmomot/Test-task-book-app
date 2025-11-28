@@ -13,6 +13,7 @@ import { TopBannerSlide } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../types';
+import { colors } from '../../../theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -179,6 +180,7 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     height: 160,
+    backgroundColor: colors.imageBackground,
     borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',

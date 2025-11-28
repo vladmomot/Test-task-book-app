@@ -5,7 +5,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
@@ -21,6 +21,7 @@ type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const DetailsScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const route = useRoute<DetailsScreenRouteProp>();
   const navigation = useNavigation<NavigationProp>();
   const { bookId } = route.params;
@@ -74,9 +75,9 @@ const DetailsScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <BackButton style={styles.backButton} />
+     <SafeAreaView style={styles.container} edges={['bottom']}>
+      <View style={[styles.header, { top: insets.top + 20 }]}>
+        <BackButton />
       </View>
       <ScrollView
         style={styles.scrollView}
@@ -117,7 +118,6 @@ const DetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -40,
   },
   emptyContainer: {
     flex: 1,
@@ -125,15 +125,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    paddingHorizontal: 16,
     position: 'absolute',
-    top: 60,
-    left: 0,
-    right: 0,
+    left: 16,
+    right: 16,
     zIndex: 1,
-  },
-  backButton: {
-    marginTop: 20,
   },
   readButton: {
     marginTop: 24
@@ -147,7 +142,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingTop: 20,
     paddingBottom: 24,
-    marginTop: -68,
+    marginTop: -56,
   },
   sumaryContent: {
     paddingHorizontal: 16,
