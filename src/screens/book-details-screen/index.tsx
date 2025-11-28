@@ -107,7 +107,7 @@ const DetailsScreen: React.FC = () => {
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
           />
-          <PrimaryButton text="Read Now" style={styles.readButton} />
+          <PrimaryButton text="Read Nowы" style={styles.readButton} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -117,7 +117,7 @@ const DetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -24,
+    marginTop: -40,
   },
   emptyContainer: {
     flex: 1,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     position: 'absolute',
-    top: 44,
+    top: 60,
     left: 0,
     right: 0,
     zIndex: 1,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingTop: 20,
     paddingBottom: 24,
-    marginTop: -48,
+    marginTop: -64,
   },
   sumaryContent: {
     paddingHorizontal: 16,

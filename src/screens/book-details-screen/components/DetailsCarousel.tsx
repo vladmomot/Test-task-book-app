@@ -9,17 +9,24 @@ import {
   NativeSyntheticEvent,
   ImageBackground,
   Text,
+  Animated,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { Book } from '../../../types';
 import { images, colors, fonts } from '../../../theme';
 
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = 200;
-const CARD_WIDTH_SMALL = 160;
-const CARD_GAP = 16;
 const CARD_HEIGHT = 250;
+const CARD_WIDTH_SMALL = 160;
 const CARD_HEIGHT_SMALL = 200;
-const HEADER_HEIGHT = 440;
+const CARD_GAP = 16;
 
 interface DetailsCarouselProps {
   books: Book[];
@@ -32,9 +39,25 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
   onBookChange,
   initialBookId,
 }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const isInitializedRef = useRef(false);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (scrollViewRef.current && reorderedBooks.length > 0 && !isInitializedRef.current) {
+      setTimeout(() => {
+        // Начальная позиция - 0, выбранная книга (теперь первая в списке) по центру
+        scrollViewRef.current?.scrollTo({
+          x: 0,
+          animated: false,
+        });
+        setCurrentIndex(0);
+        onBookChange(reorderedBooks[0]);
+        isInitializedRef.current = true;
+      }, 100);
+    }
+  }, [initialBookId]);
   
-  // Переставляем массив: выбранная книга первая, затем остальные по порядку
   const reorderedBooks = React.useMemo(() => {
     if (initialBookId === undefined || books.length === 0) {
       return books;
@@ -45,14 +68,12 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
       return books;
     }
     
-    // Выбранная книга + все после нее + все до нее
     return [
       ...books.slice(initialIndex),
       ...books.slice(0, initialIndex)
     ];
   }, [books, initialBookId]);
   
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Расчет позиций для каждой карточки
   const calculateScrollPosition = (targetIndex: number, selectedIndex: number = targetIndex): number => {
@@ -73,24 +94,6 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
     
     return position - paddingLeft;
   };
-
-  const isInitializedRef = useRef(false);
-
-  useEffect(() => {
-    if (scrollViewRef.current && reorderedBooks.length > 0 && !isInitializedRef.current) {
-      setTimeout(() => {
-        // Начальная позиция - 0, выбранная книга (теперь первая в списке) по центру
-        scrollViewRef.current?.scrollTo({
-          x: 0,
-          animated: false,
-        });
-        setCurrentIndex(0);
-        onBookChange(reorderedBooks[0]);
-        isInitializedRef.current = true;
-      }, 100);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialBookId]);
 
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
@@ -115,8 +118,20 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
         }
       }
       
-      // Обновляем книгу в родителе при изменении индекса
+      // Обновляем книгу в родителе при изменении индекса с плавной анимацией
       if (closestIndex !== prevIndex && closestIndex >= 0 && closestIndex < reorderedBooks.length) {
+        // Плавная анимация изменения размера карточек
+        LayoutAnimation.configureNext({
+          duration: 250,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.scaleXY,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        
         onBookChange(reorderedBooks[closestIndex]);
       }
       
@@ -149,32 +164,40 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
       
       // Если нашли другую карточку, переключаемся
       if (closestIndex !== prevIndex && closestIndex >= 0 && closestIndex < reorderedBooks.length) {
+        // Плавная анимация изменения размера карточек
+        LayoutAnimation.configureNext({
+          duration: 300,
+          create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.scaleXY,
+          },
+          update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+          },
+        });
+        
         // Обновляем книгу в родителе
         onBookChange(reorderedBooks[closestIndex]);
         
         // Плавно прокручиваем к правильной позиции с учетом нового индекса
-        requestAnimationFrame(() => {
-          const scrollX = calculateScrollPosition(closestIndex, closestIndex);
-          scrollViewRef.current?.scrollTo({
-            x: scrollX,
-            animated: true,
-          });
+        const scrollX = calculateScrollPosition(closestIndex, closestIndex);
+        scrollViewRef.current?.scrollTo({
+          x: scrollX,
+          animated: true,
         });
         
         return closestIndex;
       }
       
       // Если индекс не изменился, все равно выравниваем позицию для точности
-      requestAnimationFrame(() => {
-        const scrollX = calculateScrollPosition(prevIndex, prevIndex);
-        const currentOffset = offsetX;
-        if (Math.abs(currentOffset - scrollX) > 1) {
-          scrollViewRef.current?.scrollTo({
-            x: scrollX,
-            animated: true,
-          });
-        }
-      });
+      const scrollX = calculateScrollPosition(prevIndex, prevIndex);
+      const currentOffset = offsetX;
+      if (Math.abs(currentOffset - scrollX) > 1) {
+        scrollViewRef.current?.scrollTo({
+          x: scrollX,
+          animated: true,
+        });
+      }
       
       return prevIndex;
     });
@@ -199,26 +222,32 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
           onScroll={handleScroll}
           onMomentumScrollEnd={handleMomentumScrollEnd}
           scrollEventThrottle={16}
-          decelerationRate={0.88}
+          decelerationRate={0.95}
           contentContainerStyle={styles.scrollContent}>
           {reorderedBooks.map((book, index) => {
             const isSelected = index === currentIndex;
             return (
-              <View 
+              <Animated.View 
                 key={book.id} 
                 style={[
                   styles.cardContainer,
-                  !isSelected && styles.cardContainerSmall
+                  {
+                    width: isSelected ? CARD_WIDTH : CARD_WIDTH_SMALL,
+                    height: isSelected ? CARD_HEIGHT : CARD_HEIGHT_SMALL,
+                  }
                 ]}>
                 <Image
                   source={{ uri: book.cover_url }}
                   style={[
                     styles.carouselImage,
-                    !isSelected && styles.carouselImageSmall
+                    {
+                      width: isSelected ? CARD_WIDTH : CARD_WIDTH_SMALL,
+                      height: isSelected ? CARD_HEIGHT : CARD_HEIGHT_SMALL,
+                    }
                   ]}
                   resizeMode="cover"
                 />
-              </View>
+              </Animated.View>
             );
           })}
         </ScrollView>
@@ -233,7 +262,7 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
 
 const styles = StyleSheet.create({
   headerBackground: {
-    height: HEADER_HEIGHT,
+    height: 470,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -250,25 +279,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardContainer: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
     marginRight: CARD_GAP,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  cardContainerSmall: {
-    width: CARD_WIDTH_SMALL,
-    height: CARD_HEIGHT_SMALL,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   carouselImage: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
     borderRadius: 16,
     backgroundColor: colors.imageBackground,
-  },
-  carouselImageSmall: {
-    width: CARD_WIDTH_SMALL,
-    height: CARD_HEIGHT_SMALL,
   },
   textContainer: {
     paddingTop: 16,
