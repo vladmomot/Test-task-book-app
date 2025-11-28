@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingTop: 20,
     paddingBottom: 24,
-    marginTop: -64,
+    marginTop: -68,
   },
   sumaryContent: {
     paddingHorizontal: 16,
