@@ -108,7 +108,7 @@ const DetailsScreen: React.FC = () => {
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
           />
-          <PrimaryButton text="Read Nows" style={styles.readButton} />
+          <PrimaryButton text="Read Now" style={styles.readButton} />
         </View>
       </ScrollView>
     </SafeAreaView>
