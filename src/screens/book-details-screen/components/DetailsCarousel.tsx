@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     borderRadius: 16,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.imageBackground,
   },
   carouselImageSmall: {
     width: CARD_WIDTH_SMALL,

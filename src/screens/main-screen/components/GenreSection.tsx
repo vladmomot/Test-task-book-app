@@ -47,9 +47,11 @@ const styles = StyleSheet.create({
     ...fonts.h1,
     color: colors.white,
     marginBottom: 16,
+    paddingHorizontal: 16
   },
   scrollContent: {
-    gap: 8,
+    paddingHorizontal: 16,
+    gap: 8
   },
 });
 

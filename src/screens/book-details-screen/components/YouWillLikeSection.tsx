@@ -43,8 +43,10 @@ const styles = StyleSheet.create({
     ...fonts.h1,
     color: colors.black,
     marginBottom: 16,
+    paddingLeft: 16,
   },
   scrollContent: {
+    paddingHorizontal: 16,
     gap: 8,
   },
 });

@@ -87,20 +87,22 @@ const DetailsScreen: React.FC = () => {
           initialBookId={bookId}
         />
         <View style={styles.content}>
-          <StatsContainer
-            stats={[
-              { value: currentBook.views, label: 'Readers' },
-              { value: currentBook.likes, label: 'Likes' },
-              { value: currentBook.quotes, label: 'Quotes' },
-              { value: currentBook.genre, label: 'Genre' },
-            ]}
-          />
-          <View style={[styles.divider, { marginTop: 10 }]} />
-          <View>
-            <Text style={styles.summaryTitle}>Summary</Text>
-            <Text style={styles.summaryText}>{currentBook.summary}</Text>
+          <View style={styles.sumaryContent}>
+            <StatsContainer
+              stats={[
+                { value: currentBook.views, label: 'Readers' },
+                { value: currentBook.likes, label: 'Likes' },
+                { value: currentBook.quotes, label: 'Quotes' },
+                { value: currentBook.genre, label: 'Genre' },
+              ]}
+            />
+            <View style={[styles.divider, { marginTop: 10 }]} />
+            <View>
+              <Text style={styles.summaryTitle}>Summary</Text>
+              <Text style={styles.summaryText}>{currentBook.summary}</Text>
+            </View>
+            <View style={styles.divider} />
           </View>
-          <View style={styles.divider} />
           <YouWillLikeSection
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
@@ -143,10 +145,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 24,
     marginTop: -48,
+  },
+  sumaryContent: {
+    paddingHorizontal: 16,
   },
   summaryTitle: {
     ...fonts.h1,
@@ -159,7 +163,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.disabled,
     marginVertical: 16,
   },
 });

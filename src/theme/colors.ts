@@ -6,6 +6,7 @@ const colors = {
   primary: '#D0006E',
   disabled: '#D9D5D6',
   text: '#393637',
+  imageBackground: '#C4C4C4',
 };
 
 export default colors;

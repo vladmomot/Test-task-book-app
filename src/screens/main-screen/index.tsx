@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingHorizontal: 16,
   },
   scrollView: {
     flex: 1,
   },
   header: {
     paddingVertical: 28,
+    paddingHorizontal: 16,
   },
   headerTitle: {
     ...fonts.h1,

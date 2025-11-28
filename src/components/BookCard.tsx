@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 150,
     borderRadius: 16,
-    backgroundColor: '#C4C4C4',
+    backgroundColor: colors.imageBackground,
     resizeMode: 'cover',
   },
   info: {

@@ -175,6 +175,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
+    paddingHorizontal: 16,
   },
   bannerContainer: {
     height: 160,
