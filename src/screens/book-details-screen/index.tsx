@@ -15,8 +15,7 @@ import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
 import StatsContainer from './components/StatsContainer';
 import Button from '../../components/Button';
-import { colors, fonts } from '../../theme';
-import ArrowDownIcon from '../../assets/svg/ArrowDownIcon';
+import { colors, fonts, icons } from '../../theme';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -84,8 +83,9 @@ const DetailsScreen: React.FC = () => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <ArrowDownIcon color={colors.white} />
+          style={styles.backButton}
+        >
+          <icons.ArrowDownIcon color={colors.white} />
         </TouchableOpacity>
       </View>
 

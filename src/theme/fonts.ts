@@ -57,14 +57,14 @@ const fonts = {
   statLabel: {
     fontFamily: 'NunitoSans-SemiBold',
     fontSize: 12,
-    lineHeight: 13.2, // 110% of 12
+    lineHeight: 13.2,
     letterSpacing: -0.41,
   } as TextStyle,
 
   authorName: {
     fontFamily: 'NunitoSans-Bold',
     fontSize: 14,
-    lineHeight: 15.4, // 110% of 14
+    lineHeight: 15.4,
     letterSpacing: -0.41,
   } as TextStyle,
 };
