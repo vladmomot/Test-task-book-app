@@ -1,4 +1,3 @@
-// Refactored TopBanner component
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
