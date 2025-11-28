@@ -52,6 +52,7 @@ const MainScreen: React.FC = () => {
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContainer}
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
@@ -77,6 +78,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollViewContainer: {
+    paddingBottom: 24,
   },
   header: {
     paddingVertical: 28,

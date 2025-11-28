@@ -127,13 +127,13 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     position: 'absolute',
-    top: 0,
+    top: 44,
     left: 0,
     right: 0,
-    zIndex: 10,
+    zIndex: 1,
   },
   backButton: {
-    paddingTop: 64,
+    marginTop: 20,
   },
   readButton: {
     marginTop: 24

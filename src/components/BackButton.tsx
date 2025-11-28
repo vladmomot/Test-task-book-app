@@ -23,6 +23,7 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, style }) => {
       activeOpacity={0.8}
       onPress={handlePress}
       style={[styles.button, style]}
+      hitSlop={20}
     >
       <icons.ArrowDownIcon color={colors.white} />
     </TouchableOpacity>
@@ -32,6 +33,7 @@ const BackButton: React.FC<BackButtonProps> = ({ onPress, style }) => {
 const styles = StyleSheet.create({
   button: {
     width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
