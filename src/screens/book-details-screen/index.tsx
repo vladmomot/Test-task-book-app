@@ -84,18 +84,18 @@ const DetailsScreen: React.FC = () => {
         <DetailsCarousel
           books={carouselBooks}
           onBookChange={handleCarouselBookChange}
-          initialBookId={bookId}
+          initialBookId={bookId} 
         />
         <View style={styles.content}>
           <View style={styles.sumaryContent}>
-            <StatsContainer
+            <StatsContainer 
               stats={[
-                { value: currentBook.views, label: 'Readers' },
+                { value: currentBook.views, label: 'Readers' }, 
                 { value: currentBook.likes, label: 'Likes' },
                 { value: currentBook.quotes, label: 'Quotes' },
-                { value: currentBook.genre, label: 'Genre' },
+                { value: currentBook.genre, label: 'Genre' }, 
               ]}
-            />
+            /> 
             <View style={[styles.divider, { marginTop: 10 }]} />
             <View>
               <Text style={styles.summaryTitle}>Summary</Text>
@@ -107,7 +107,7 @@ const DetailsScreen: React.FC = () => {
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
           />
-          <PrimaryButton text="Read Nowы" style={styles.readButton} />
+          <PrimaryButton text="Read Nows" style={styles.readButton} />
         </View>
       </ScrollView>
     </SafeAreaView>
