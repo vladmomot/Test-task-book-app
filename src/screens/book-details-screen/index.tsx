@@ -13,7 +13,10 @@ import { RootStackParamList, Book } from '../../types';
 import remoteConfigService from '../../services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
+import StatsContainer from './components/StatsContainer';
+import Button from '../../components/Button';
 import { colors, fonts } from '../../theme';
+import ArrowDownIcon from '../../assets/svg/ArrowDownIcon';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -79,19 +82,16 @@ const DetailsScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
-          <Text style={styles.backButtonText}>←</Text>
+          <ArrowDownIcon color={colors.white} />
         </TouchableOpacity>
       </View>
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.headerContent}>
-          <Text style={styles.bookTitle}>{currentBook.name}</Text>
-          <Text style={styles.bookAuthor}>{currentBook.author}</Text>
-        </View>
         <DetailsCarousel
           books={carouselBooks}
           onBookChange={handleCarouselBookChange}
@@ -99,24 +99,14 @@ const DetailsScreen: React.FC = () => {
         />
 
         <View style={styles.content}>
-          <View style={styles.statsContainer}>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentBook.views}</Text>
-              <Text style={styles.statLabel}>Readers</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentBook.likes}</Text>
-              <Text style={styles.statLabel}>Likes</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentBook.quotes}</Text>
-              <Text style={styles.statLabel}>Quotes</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentBook.genre}</Text>
-              <Text style={styles.statLabel}>Genre</Text>
-            </View>
-          </View>
+          <StatsContainer
+            stats={[
+              { value: currentBook.views, label: 'Readers' },
+              { value: currentBook.likes, label: 'Likes' },
+              { value: currentBook.quotes, label: 'Quotes' },
+              { value: currentBook.genre, label: 'Genre' },
+            ]}
+          />
 
           <View style={styles.summarySection}>
             <Text style={styles.summaryTitle}>Summary</Text>
@@ -128,9 +118,7 @@ const DetailsScreen: React.FC = () => {
             onBookPress={handleBookPress}
           />
 
-          <TouchableOpacity style={styles.readNowButton}>
-            <Text style={styles.readNowButtonText}>Read Now</Text>
-          </TouchableOpacity>
+          <Button text="Read Now" />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -140,7 +128,7 @@ const DetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    marginTop: -24,
   },
   loadingContainer: {
     flex: 1,
@@ -149,8 +137,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 8,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -158,32 +144,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButton: {
-    paddingVertical: 8,
-    width: 40,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: colors.white,
-  },
-  headerContent: {
-    paddingTop: 60,
-    paddingHorizontal: 16,
+    paddingTop: 64,
+    width: 24,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  bookTitle: {
-    ...fonts.title,
-    fontSize: 24,
-    color: colors.white,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  bookAuthor: {
-    ...fonts.text,
-    fontSize: 16,
-    color: colors.white,
-    textAlign: 'center',
-    opacity: 0.9,
   },
   scrollView: {
     flex: 1,
@@ -195,23 +159,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 24,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 24,
-  },
-  stat: {
-    alignItems: 'center',
-  },
-  statValue: {
-    ...fonts.statValue,
-    color: colors.black,
-    marginBottom: 4,
-  },
-  statLabel: {
-    ...fonts.statLabel,
-    color: colors.disabled,
+    marginTop: -48,
   },
   summarySection: {
     marginBottom: 24,
@@ -224,20 +172,6 @@ const styles = StyleSheet.create({
   summaryText: {
     ...fonts.text,
     color: colors.black,
-  },
-  readNowButton: {
-    width: 278,
-    height: 48,
-    borderRadius: 30,
-    backgroundColor: colors.button,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: 24,
-  },
-  readNowButtonText: {
-    ...fonts.button,
-    color: colors.white,
   },
 });
 

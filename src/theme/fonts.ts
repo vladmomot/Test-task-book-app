@@ -60,6 +60,13 @@ const fonts = {
     lineHeight: 13.2, // 110% of 12
     letterSpacing: -0.41,
   } as TextStyle,
+
+  authorName: {
+    fontFamily: 'NunitoSans-Bold',
+    fontSize: 14,
+    lineHeight: 15.4, // 110% of 14
+    letterSpacing: -0.41,
+  } as TextStyle,
 };
 
 export default fonts;

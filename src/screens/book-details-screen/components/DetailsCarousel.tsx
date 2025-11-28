@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -8,15 +8,18 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ImageBackground,
+  Text,
 } from 'react-native';
 import { Book } from '../../../types';
-import { images } from '../../../theme';
+import { images, colors, fonts } from '../../../theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = 200;
+const CARD_WIDTH_SMALL = 160;
 const CARD_GAP = 16;
 const CARD_HEIGHT = 250;
-const HEADER_HEIGHT = 420;
+const CARD_HEIGHT_SMALL = 200;
+const HEADER_HEIGHT = 440;
 
 interface DetailsCarouselProps {
   books: Book[];
@@ -38,15 +41,25 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
     return 0;
   });
 
-  const cardWidthWithGap = CARD_WIDTH + CARD_GAP;
-  const paddingLeft = (SCREEN_WIDTH - CARD_WIDTH) / 2;
+  // Расчет позиций для каждой карточки
+  const calculateScrollPosition = (targetIndex: number, selectedIndex: number = targetIndex): number => {
+    let position = 0;
+    
+    for (let i = 0; i < targetIndex; i++) {
+      const isSmall = i !== selectedIndex;
+      const cardWidth = isSmall ? CARD_WIDTH_SMALL : CARD_WIDTH;
+      position += cardWidth + CARD_GAP;
+    }
+    
+    return position;
+  };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialBookId !== undefined && scrollViewRef.current && books.length > 0) {
       const index = books.findIndex((b) => b.id === initialBookId);
       if (index >= 0) {
         setTimeout(() => {
-          const scrollX = index * cardWidthWithGap;
+          const scrollX = calculateScrollPosition(index, index);
           scrollViewRef.current?.scrollTo({
             x: scrollX,
             animated: false,
@@ -56,23 +69,44 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
         }, 100);
       }
     }
-  }, [initialBookId, books, onBookChange, cardWidthWithGap]);
+  }, [initialBookId, books, onBookChange]);
 
   const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    // Учитываем padding при расчете индекса
-    const adjustedOffset = offsetX;
-    const index = Math.round(adjustedOffset / cardWidthWithGap);
     
-    if (index >= 0 && index < books.length) {
-      setCurrentIndex(index);
-      onBookChange(books[index]);
+    // Находим ближайшую карточку
+    let closestIndex = 0;
+    let minDistance = Infinity;
+    
+    for (let i = 0; i < books.length; i++) {
+      const scrollPos = calculateScrollPosition(i, currentIndex);
+      const distance = Math.abs(offsetX - scrollPos);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = i;
+      }
+    }
+    
+    if (closestIndex >= 0 && closestIndex < books.length && closestIndex !== currentIndex) {
+      setCurrentIndex(closestIndex);
+      onBookChange(books[closestIndex]);
+      
+      // Прокручиваем к правильной позиции с учетом нового выбранного индекса
+      setTimeout(() => {
+        const scrollX = calculateScrollPosition(closestIndex, closestIndex);
+        scrollViewRef.current?.scrollTo({
+          x: scrollX,
+          animated: true,
+        });
+      }, 50);
     }
   };
 
   if (books.length === 0) {
     return null;
   }
+
+  const currentBook = books[currentIndex];
 
   return (
     <ImageBackground
@@ -87,19 +121,32 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
           onMomentumScrollEnd={handleMomentumScrollEnd}
           scrollEventThrottle={16}
           decelerationRate="fast"
-          snapToInterval={cardWidthWithGap}
-          snapToAlignment="start"
           contentContainerStyle={styles.scrollContent}>
-          {books.map((book) => (
-            <View key={book.id} style={styles.cardContainer}>
-              <Image
-                source={{ uri: book.cover_url }}
-                style={styles.carouselImage}
-                resizeMode="cover"
-              />
-            </View>
-          ))}
+          {books.map((book, index) => {
+            const isSelected = index === currentIndex;
+            return (
+              <View 
+                key={book.id} 
+                style={[
+                  styles.cardContainer,
+                  !isSelected && styles.cardContainerSmall
+                ]}>
+                <Image
+                  source={{ uri: book.cover_url }}
+                  style={[
+                    styles.carouselImage,
+                    !isSelected && styles.carouselImageSmall
+                  ]}
+                  resizeMode="cover"
+                />
+              </View>
+            );
+          })}
         </ScrollView>
+      </View>
+      <View style={styles.textContainer}>
+        <Text style={styles.bookTitle}>{currentBook.name}</Text>
+        <Text style={styles.bookAuthor}>{currentBook.author}</Text>
       </View>
     </ImageBackground>
   );
@@ -121,17 +168,43 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingLeft: (SCREEN_WIDTH - CARD_WIDTH) / 2,
     paddingRight: (SCREEN_WIDTH - CARD_WIDTH) / 2,
+    alignItems: 'center',
   },
   cardContainer: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     marginRight: CARD_GAP,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardContainerSmall: {
+    width: CARD_WIDTH_SMALL,
+    height: CARD_HEIGHT_SMALL,
   },
   carouselImage: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     borderRadius: 16,
     backgroundColor: '#E0E0E0',
+  },
+  carouselImageSmall: {
+    width: CARD_WIDTH_SMALL,
+    height: CARD_HEIGHT_SMALL,
+  },
+  textContainer: {
+    paddingTop: 16,
+    alignItems: 'center',
+  },
+  bookTitle: {
+    ...fonts.h1,
+    color: colors.white,
+    textAlign: 'center',
+  },
+  bookAuthor: {
+    ...fonts.authorName,
+    color: colors.white,
+    textAlign: 'center',
+    marginTop: 4,
   },
 });
 

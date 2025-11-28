@@ -22,6 +22,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeFactory = factory
 
     window = UIWindow(frame: UIScreen.main.bounds)
+    
+    // Make status bar transparent and set style
+    if let window = window {
+      window.backgroundColor = UIColor.clear
+    }
+    
+    // Set status bar style to light content
+    if #available(iOS 13.0, *) {
+      // Status bar style will be controlled by React Native StatusBar component
+    } else {
+      UIApplication.shared.statusBarStyle = .lightContent
+    }
 
     factory.startReactNative(
       withModuleName: "BookApp",
