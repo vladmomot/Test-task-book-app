@@ -6,11 +6,13 @@ import { colors, fonts } from '../theme';
 interface BookCardProps {
   book: Book;
   onPress: (bookId: number) => void;
+  isTextBlack?: boolean;
 }
 
 const BookCard: React.FC<BookCardProps> = ({
   book,
   onPress,
+  isTextBlack,
 }) => {
   return (
     <TouchableOpacity
@@ -20,7 +22,7 @@ const BookCard: React.FC<BookCardProps> = ({
     >
       <Image source={{ uri: book.cover_url }} style={styles.cover} />
       <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, isTextBlack && { color: colors.text }]} numberOfLines={2}>
           {book.name}
         </Text>
       </View>
@@ -30,7 +32,6 @@ const BookCard: React.FC<BookCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginRight: 10,
     width: 120,
   },
   cover: {
@@ -45,8 +46,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...fonts.title,
-    color: colors.white,
-    opacity: 0.7,
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });
 

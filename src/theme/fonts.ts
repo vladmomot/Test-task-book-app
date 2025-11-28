@@ -46,6 +46,20 @@ const fonts = {
     letterSpacing: 0,
     color: 'rgba(255, 255, 255, 0.8)',
   } as TextStyle,
+
+  statValue: {
+    fontFamily: 'NunitoSans-Bold',
+    fontSize: 18,
+    lineHeight: 22,
+    letterSpacing: -0.41,
+  } as TextStyle,
+
+  statLabel: {
+    fontFamily: 'NunitoSans-SemiBold',
+    fontSize: 12,
+    lineHeight: 13.2, // 110% of 12
+    letterSpacing: -0.41,
+  } as TextStyle,
 };
 
 export default fonts;

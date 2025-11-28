@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Book } from '../types';
-import BookCard from './BookCard';
+import { Book } from '../../../types';
+import BookCard from '../../../components/BookCard';
+import { colors, fonts } from '../../../theme';
 
-interface YouWillLikeSectionProps {
+interface GenreSectionProps {
+  genre: string;
   books: Book[];
   onBookPress: (bookId: number) => void;
 }
 
-const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
+const GenreSection: React.FC<GenreSectionProps> = ({
+  genre,
   books,
   onBookPress,
 }) => {
@@ -18,11 +21,12 @@ const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>You will also like</Text>
+      <Text style={styles.genreTitle}>{genre}</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         {books.map((book) => (
           <BookCard
             key={book.id}
@@ -38,19 +42,16 @@ const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 24,
-    marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 12,
-    paddingHorizontal: 16,
+  genreTitle: {
+    ...fonts.h1,
+    color: colors.white,
+    marginBottom: 16,
   },
   scrollContent: {
-    paddingHorizontal: 16,
+    gap: 8,
   },
 });
 
-export default YouWillLikeSection;
+export default GenreSection;
 

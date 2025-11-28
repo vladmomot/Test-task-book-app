@@ -9,10 +9,10 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
-import { TopBannerSlide } from '../types';
+import { TopBannerSlide } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from '../../../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 

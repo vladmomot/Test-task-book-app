@@ -10,8 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
 import remoteConfigService from '../../services/remoteConfig';
-import TopBanner from '../../components/TopBanner';
-import GenreSection from '../../components/GenreSection';
+import TopBanner from './components/TopBanner';
+import GenreSection from './components/GenreSection';
 import { colors, fonts } from '../../theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
