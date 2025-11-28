@@ -22,6 +22,10 @@ export interface JsonData {
   you_will_like_section: number[];
 }
 
+export interface CarouselData {
+  books: Book[];
+}
+
 export type RootStackParamList = {
   Splash: undefined;
   Main: undefined;

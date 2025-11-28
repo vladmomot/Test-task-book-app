@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList, Book } from '../../types';
+import { RootStackParamList, Book, TopBannerSlide } from '../../types';
 import remoteConfigService from '../../services/remoteConfig';
 import TopBanner from './components/TopBanner';
 import GenreSection from './components/GenreSection';
@@ -18,7 +18,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
 const MainScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [topBannerSlides, setTopBannerSlides] = useState<any[]>([]);
+  const [topBannerSlides, setTopBannerSlides] = useState<TopBannerSlide[]>([]);
   const [booksByGenre, setBooksByGenre] = useState<Record<string, Book[]>>({});
 
   useEffect(() => {

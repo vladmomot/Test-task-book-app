@@ -43,7 +43,7 @@ const DetailsScreen: React.FC = () => {
         setCurrentBook(foundBook);
       }
       const carousel = remoteConfigService.getDetailsCarousel();
-      setCarouselBooks(carousel.length > 0 ? carousel : allBooks);
+      setCarouselBooks(carousel.books.length > 0 ? carousel.books : []);
 
       const youWillLikeIds = jsonData.you_will_like_section || [];
       const youWillLike = youWillLikeIds

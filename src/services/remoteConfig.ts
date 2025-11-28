@@ -1,5 +1,5 @@
 import remoteConfig from '@react-native-firebase/remote-config';
-import { JsonData, Book } from '../types';
+import { JsonData, CarouselData } from '../types';
 
 class RemoteConfigService {
   private static instance: RemoteConfigService;
@@ -59,13 +59,15 @@ class RemoteConfigService {
     }
   }
 
-  getDetailsCarousel(): Book[] {
+  getDetailsCarousel(): CarouselData {
     try {
       const carouselString = this.config.getValue('details_carousel').asString();
       return JSON.parse(carouselString);
     } catch (error) {
       console.error('Error getting details_carousel:', error);
-      return [];
+      return {
+        books: [],
+      };
     }
   }
 }
