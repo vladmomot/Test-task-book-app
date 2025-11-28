@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
@@ -32,7 +32,6 @@ const DetailsScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      await remoteConfigService.initialize();
       const jsonData = remoteConfigService.getJsonData();
       const allBooks = jsonData.books || [];
       

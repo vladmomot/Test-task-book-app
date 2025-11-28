@@ -3,21 +3,21 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   Text,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
 import remoteConfigService from '../../services/remoteConfig';
 import TopBanner from '../../components/TopBanner';
 import GenreSection from '../../components/GenreSection';
+import { colors, fonts } from '../../theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
 const MainScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [books, setBooks] = useState<Book[]>([]);
   const [topBannerSlides, setTopBannerSlides] = useState<any[]>([]);
   const [booksByGenre, setBooksByGenre] = useState<Record<string, Book[]>>({});
 
@@ -27,10 +27,7 @@ const MainScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      await remoteConfigService.initialize();
       const jsonData = remoteConfigService.getJsonData();
-      
-      setBooks(jsonData.books || []);
       setTopBannerSlides(jsonData.top_banner_slides || []);
 
       // Группируем книги по жанрам
@@ -79,21 +76,18 @@ const MainScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
+    paddingHorizontal: 16,
   },
   scrollView: {
     flex: 1,
   },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    paddingVertical: 32,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000000',
+    ...fonts.h1,
+    color: colors.primary,
   },
 });
 

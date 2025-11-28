@@ -19,11 +19,9 @@ const SplashScreen: React.FC = () => {
   const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Инициализация Remote Config
     const initRemoteConfig = async () => {
       try {
         await remoteConfigService.initialize();
-        console.log('Remote Config initialized successfully');
       } catch (error) {
         console.error('Failed to initialize Remote Config:', error);
       }
@@ -31,25 +29,23 @@ const SplashScreen: React.FC = () => {
 
     initRemoteConfig();
 
-    // Анимация прогресс бара (бесконечная)
     Animated.loop(
       Animated.sequence([
         Animated.timing(progressAnim, {
           toValue: 1,
-          duration: 1000,
+          duration: 2000,
           useNativeDriver: false,
         }),
         Animated.timing(progressAnim, {
           toValue: 0,
-          duration: 1000,
+          duration: 10,
           useNativeDriver: false,
         }),
       ])
     ).start();
 
-    // Переход на Main screen через 2 секунды
     const timer = setTimeout(() => {
-    // navigation.replace('Main');
+      navigation.replace('Main');
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -72,8 +68,7 @@ const SplashScreen: React.FC = () => {
         resizeMode="cover">
         <View style={styles.content}>
           <Text style={styles.splashTitle}>Book App</Text>
-          <Text style={fonts.splashSubtitle}>Welcome to Book App</Text>
-          <View style={styles.splashSubtitle} />
+          <Text style={styles.splashSubtitle}>Welcome to Book App</Text>
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBarBackground}>
               <Animated.View

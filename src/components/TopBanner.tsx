@@ -17,6 +17,7 @@ import { RootStackParamList } from '../types';
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const slideWidth = SCREEN_WIDTH - 32;
 
 interface TopBannerProps {
   slides: TopBannerSlide[];
@@ -32,40 +33,37 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   const infiniteSlides = slides.length > 0 
     ? [slides[slides.length - 1], ...slides, slides[0]]
     : [];
+    
+    // Автоскролл каждые 3 секунды
+  const startAutoScroll = () => {
+    autoScrollTimer.current = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const nextIndex = prev + 1;
+        if (nextIndex >= slides.length) {
+          scrollViewRef.current?.scrollTo({
+            x: slideWidth * (slides.length + 1),
+            animated: true,
+          });
+          return 0;
+        } else {
+          scrollViewRef.current?.scrollTo({
+            x: slideWidth * (nextIndex + 1),
+            animated: true,
+          });
+          return nextIndex;
+        }
+      });
+    }, 3000);
+  };
 
   useEffect(() => {
     if (slides.length === 0) return;
-
-    // Устанавливаем начальную позицию на первый реальный слайд
     setTimeout(() => {
       scrollViewRef.current?.scrollTo({
-        x: SCREEN_WIDTH,
+        x: slideWidth,
         animated: false,
       });
     }, 100);
-
-    // Автоскролл каждые 3 секунды
-    const startAutoScroll = () => {
-      autoScrollTimer.current = setInterval(() => {
-        setCurrentIndex((prev) => {
-          const nextIndex = prev + 1;
-          if (nextIndex >= slides.length) {
-            // Переход к первому слайду через последний
-            scrollViewRef.current?.scrollTo({
-              x: SCREEN_WIDTH * (slides.length + 1),
-              animated: true,
-            });
-            return 0;
-          } else {
-            scrollViewRef.current?.scrollTo({
-              x: SCREEN_WIDTH * (nextIndex + 1),
-              animated: true,
-            });
-            return nextIndex;
-          }
-        });
-      }, 3000);
-    };
 
     startAutoScroll();
 
@@ -78,34 +76,38 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / SCREEN_WIDTH);
+    const index = Math.round(offsetX / slideWidth);
 
     // Обработка бесконечного скролла
     if (index === 0) {
-      // Прокрутили к последнему слайду (клонированному)
       setTimeout(() => {
         scrollViewRef.current?.scrollTo({
-          x: SCREEN_WIDTH * slides.length,
+          x: slideWidth * slides.length,
           animated: false,
         });
-        setCurrentIndex(slides.length - 1);
       }, 50);
     } else if (index === infiniteSlides.length - 1) {
-      // Прокрутили к первому слайду (клонированному)
       setTimeout(() => {
         scrollViewRef.current?.scrollTo({
-          x: SCREEN_WIDTH,
+          x: slideWidth,
           animated: false,
         });
-        setCurrentIndex(0);
       }, 50);
-    } else {
+    }
+  };
+
+  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    // Обновляем индекс только после завершения скролла
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / slideWidth);
+    
+    if (index > 0 && index < infiniteSlides.length - 1) {
       setCurrentIndex(index - 1);
     }
   };
 
   const handleSlidePress = (slide: TopBannerSlide) => {
-    navigation.navigate('Details', { bookId: slide.book_id });
+    navigation.navigate('BookDetails', { bookId: slide.book_id });
   };
 
   const handleScrollBeginDrag = () => {
@@ -117,27 +119,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   };
 
   const handleScrollEndDrag = () => {
-    // Возобновляем автоскролл после окончания свайпа
-    if (autoScrollTimer.current === null) {
-      autoScrollTimer.current = setInterval(() => {
-        setCurrentIndex((prev) => {
-          const nextIndex = prev + 1;
-          if (nextIndex >= slides.length) {
-            scrollViewRef.current?.scrollTo({
-              x: SCREEN_WIDTH * (slides.length + 1),
-              animated: true,
-            });
-            return 0;
-          } else {
-            scrollViewRef.current?.scrollTo({
-              x: SCREEN_WIDTH * (nextIndex + 1),
-              animated: true,
-            });
-            return nextIndex;
-          }
-        });
-      }, 3000);
-    }
+    startAutoScroll();
   };
 
   if (slides.length === 0) {
@@ -146,41 +128,45 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        onScrollBeginDrag={handleScrollBeginDrag}
-        onScrollEndDrag={handleScrollEndDrag}
-        scrollEventThrottle={16}
-        decelerationRate="fast"
-        snapToInterval={SCREEN_WIDTH}
-        snapToAlignment="start">
-        {infiniteSlides.map((slide, index) => (
-          <TouchableOpacity
-            key={`${slide.id}-${index}`}
-            onPress={() => handleSlidePress(slide)}
-            activeOpacity={0.9}>
-            <Image
-              source={{ uri: slide.cover }}
-              style={styles.slideImage}
-              resizeMode="cover"
+      <View style={styles.bannerContainer}>
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          onMomentumScrollEnd={handleMomentumScrollEnd}
+          onScrollBeginDrag={handleScrollBeginDrag}
+          onScrollEndDrag={handleScrollEndDrag}
+          scrollEventThrottle={16}
+          decelerationRate="fast"
+          snapToInterval={slideWidth}
+          snapToAlignment="start"
+          contentContainerStyle={styles.scrollContent}>
+          {infiniteSlides.map((slide, index) => (
+            <TouchableOpacity
+              key={`${slide.id}-${index}`}
+              onPress={() => handleSlidePress(slide)}
+              activeOpacity={0.9}>
+              <Image
+                source={{ uri: slide.cover }}
+                style={styles.slideImage}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <View style={styles.indicatorContainer}>
+          {slides.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.indicator,
+                index === currentIndex && styles.activeIndicator,
+              ]}
             />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <View style={styles.indicatorContainer}>
-        {slides.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicator,
-              index === currentIndex && styles.activeIndicator,
-            ]}
-          />
-        ))}
+          ))}
+        </View>
       </View>
     </View>
   );
@@ -188,29 +174,39 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  bannerContainer: {
+    height: 160,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  scrollContent: {
+    paddingHorizontal: 0,
   },
   slideImage: {
-    width: SCREEN_WIDTH,
-    height: 200,
-    backgroundColor: '#E0E0E0',
+    width: slideWidth,
+    height: 160,
   },
   indicatorContainer: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 12,
-    gap: 8,
+    gap: 10,
   },
   indicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#CCCCCC',
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: '#C1C2CA',
   },
   activeIndicator: {
-    backgroundColor: '#007AFF',
-    width: 24,
+    backgroundColor: '#D0006E',
   },
 });
 

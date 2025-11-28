@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Book } from '../types';
 import BookCard from './BookCard';
+import { colors, fonts } from '../theme';
 
 interface GenreSectionProps {
   genre: string;
@@ -24,13 +25,12 @@ const GenreSection: React.FC<GenreSectionProps> = ({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+      >
         {books.map((book) => (
           <BookCard
             key={book.id}
             book={book}
             onPress={onBookPress}
-            horizontal
           />
         ))}
       </ScrollView>
@@ -40,17 +40,12 @@ const GenreSection: React.FC<GenreSectionProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 24,
+    marginTop: 24,
   },
   genreTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 12,
-    paddingHorizontal: 16,
-  },
-  scrollContent: {
-    paddingHorizontal: 16,
+    ...fonts.h1,
+    color: colors.white,
+    marginBottom: 16,
   },
 });
 

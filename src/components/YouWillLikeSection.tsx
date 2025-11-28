@@ -28,7 +28,6 @@ const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
             key={book.id}
             book={book}
             onPress={onBookPress}
-            horizontal
           />
         ))}
       </ScrollView>
