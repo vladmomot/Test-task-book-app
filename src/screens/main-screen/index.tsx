@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingVertical: 32,
+    paddingVertical: 28,
   },
   headerTitle: {
     ...fonts.h1,
