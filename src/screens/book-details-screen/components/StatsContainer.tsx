@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 24,
   },
 });
 

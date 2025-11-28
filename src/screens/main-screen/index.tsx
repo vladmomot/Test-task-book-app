@@ -30,7 +30,6 @@ const MainScreen: React.FC = () => {
       const jsonData = remoteConfigService.getJsonData();
       setTopBannerSlides(jsonData.top_banner_slides || []);
 
-      // Группируем книги по жанрам
       const grouped: Record<string, Book[]> = {};
       (jsonData.books || []).forEach((book: Book) => {
         if (!grouped[book.genre]) {
@@ -57,9 +56,7 @@ const MainScreen: React.FC = () => {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
         </View>
-
         <TopBanner slides={topBannerSlides} />
-
         {Object.entries(booksByGenre).map(([genre, genreBooks]) => (
           <GenreSection
             key={genre}
