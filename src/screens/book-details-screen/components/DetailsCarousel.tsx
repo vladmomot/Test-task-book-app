@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -33,80 +33,158 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
   initialBookId,
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const [currentIndex, setCurrentIndex] = useState(() => {
-    if (initialBookId !== undefined) {
-      const index = books.findIndex((b) => b.id === initialBookId);
-      return index >= 0 ? index : 0;
+  
+  // Переставляем массив: выбранная книга первая, затем остальные по порядку
+  const reorderedBooks = React.useMemo(() => {
+    if (initialBookId === undefined || books.length === 0) {
+      return books;
     }
-    return 0;
-  });
+    
+    const initialIndex = books.findIndex((b) => b.id === initialBookId);
+    if (initialIndex < 0) {
+      return books;
+    }
+    
+    // Выбранная книга + все после нее + все до нее
+    return [
+      ...books.slice(initialIndex),
+      ...books.slice(0, initialIndex)
+    ];
+  }, [books, initialBookId]);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Расчет позиций для каждой карточки
   const calculateScrollPosition = (targetIndex: number, selectedIndex: number = targetIndex): number => {
-    let position = 0;
+    const paddingLeft = (SCREEN_WIDTH - CARD_WIDTH) / 2;
     
-    for (let i = 0; i < targetIndex; i++) {
-      const isSmall = i !== selectedIndex;
-      const cardWidth = isSmall ? CARD_WIDTH_SMALL : CARD_WIDTH;
-      position += cardWidth + CARD_GAP;
+    // Первая книга (индекс 0) всегда на позиции 0
+    if (targetIndex === 0) {
+      return 0;
     }
     
-    return position;
+    // Рассчитываем позицию от первой книги
+    let position = paddingLeft;
+    for (let i = 1; i <= targetIndex; i++) {
+      const prevIsSmall = i - 1 !== selectedIndex;
+      const prevCardWidth = prevIsSmall ? CARD_WIDTH_SMALL : CARD_WIDTH;
+      position += prevCardWidth + CARD_GAP;
+    }
+    
+    return position - paddingLeft;
   };
+
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
-    if (initialBookId !== undefined && scrollViewRef.current && books.length > 0) {
-      const index = books.findIndex((b) => b.id === initialBookId);
-      if (index >= 0) {
-        setTimeout(() => {
-          const scrollX = calculateScrollPosition(index, index);
-          scrollViewRef.current?.scrollTo({
-            x: scrollX,
-            animated: false,
-          });
-          setCurrentIndex(index);
-          onBookChange(books[index]);
-        }, 100);
-      }
+    if (scrollViewRef.current && reorderedBooks.length > 0 && !isInitializedRef.current) {
+      setTimeout(() => {
+        // Начальная позиция - 0, выбранная книга (теперь первая в списке) по центру
+        scrollViewRef.current?.scrollTo({
+          x: 0,
+          animated: false,
+        });
+        setCurrentIndex(0);
+        onBookChange(reorderedBooks[0]);
+        isInitializedRef.current = true;
+      }, 100);
     }
-  }, [initialBookId, books, onBookChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialBookId]);
 
-  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     
-    // Находим ближайшую карточку
-    let closestIndex = 0;
-    let minDistance = Infinity;
-    
-    for (let i = 0; i < books.length; i++) {
-      const scrollPos = calculateScrollPosition(i, currentIndex);
-      const distance = Math.abs(offsetX - scrollPos);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIndex = i;
-      }
+    // Ограничиваем скролл - нельзя скроллить влево от начальной позиции
+    if (offsetX < 0) {
+      scrollViewRef.current?.scrollTo({ x: 0, animated: false });
+      return;
     }
     
-    if (closestIndex >= 0 && closestIndex < books.length && closestIndex !== currentIndex) {
-      setCurrentIndex(closestIndex);
-      onBookChange(books[closestIndex]);
+    // Находим ближайшую карточку на основе текущего индекса
+    setCurrentIndex((prevIndex) => {
+      let closestIndex = prevIndex;
+      let minDistance = Infinity;
       
-      // Прокручиваем к правильной позиции с учетом нового выбранного индекса
-      setTimeout(() => {
-        const scrollX = calculateScrollPosition(closestIndex, closestIndex);
-        scrollViewRef.current?.scrollTo({
-          x: scrollX,
-          animated: true,
-        });
-      }, 50);
-    }
-  };
+      for (let i = 0; i < reorderedBooks.length; i++) {
+        const position = calculateScrollPosition(i, prevIndex);
+        const distance = Math.abs(offsetX - position);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIndex = i;
+        }
+      }
+      
+      // Обновляем книгу в родителе при изменении индекса
+      if (closestIndex !== prevIndex && closestIndex >= 0 && closestIndex < reorderedBooks.length) {
+        onBookChange(reorderedBooks[closestIndex]);
+      }
+      
+      return closestIndex;
+    });
+  }, [reorderedBooks, onBookChange]);
 
-  if (books.length === 0) {
+  const handleMomentumScrollEnd = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    
+    // Ограничиваем скролл - нельзя скроллить влево от начальной позиции
+    if (offsetX < 0) {
+      scrollViewRef.current?.scrollTo({ x: 0, animated: true });
+      return;
+    }
+    
+    // Находим ближайшую карточку для snap
+    setCurrentIndex((prevIndex) => {
+      let closestIndex = prevIndex;
+      let minDistance = Infinity;
+      
+      for (let i = 0; i < reorderedBooks.length; i++) {
+        const position = calculateScrollPosition(i, prevIndex);
+        const distance = Math.abs(offsetX - position);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIndex = i;
+        }
+      }
+      
+      // Если нашли другую карточку, переключаемся
+      if (closestIndex !== prevIndex && closestIndex >= 0 && closestIndex < reorderedBooks.length) {
+        // Обновляем книгу в родителе
+        onBookChange(reorderedBooks[closestIndex]);
+        
+        // Плавно прокручиваем к правильной позиции с учетом нового индекса
+        requestAnimationFrame(() => {
+          const scrollX = calculateScrollPosition(closestIndex, closestIndex);
+          scrollViewRef.current?.scrollTo({
+            x: scrollX,
+            animated: true,
+          });
+        });
+        
+        return closestIndex;
+      }
+      
+      // Если индекс не изменился, все равно выравниваем позицию для точности
+      requestAnimationFrame(() => {
+        const scrollX = calculateScrollPosition(prevIndex, prevIndex);
+        const currentOffset = offsetX;
+        if (Math.abs(currentOffset - scrollX) > 1) {
+          scrollViewRef.current?.scrollTo({
+            x: scrollX,
+            animated: true,
+          });
+        }
+      });
+      
+      return prevIndex;
+    });
+  }, [reorderedBooks, onBookChange]);
+
+  if (reorderedBooks.length === 0) {
     return null;
   }
 
-  const currentBook = books[currentIndex];
+  const currentBook = reorderedBooks[currentIndex];
 
   return (
     <ImageBackground
@@ -118,11 +196,12 @@ const DetailsCarousel: React.FC<DetailsCarouselProps> = ({
           ref={scrollViewRef}
           horizontal
           showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
           onMomentumScrollEnd={handleMomentumScrollEnd}
           scrollEventThrottle={16}
-          decelerationRate="fast"
+          decelerationRate={0.88}
           contentContainerStyle={styles.scrollContent}>
-          {books.map((book, index) => {
+          {reorderedBooks.map((book, index) => {
             const isSelected = index === currentIndex;
             return (
               <View 
