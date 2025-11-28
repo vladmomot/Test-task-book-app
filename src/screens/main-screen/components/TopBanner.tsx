@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+// Refactored TopBanner component
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   ScrollView,
@@ -6,165 +7,153 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
 } from 'react-native';
-import { TopBannerSlide } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../types';
 import { colors } from '../../../theme';
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+import { RootStackParamList, TopBannerSlide } from '../../../types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const slideWidth = SCREEN_WIDTH - 32;
+const SLIDE_WIDTH = SCREEN_WIDTH - 32;
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface TopBannerProps {
   slides: TopBannerSlide[];
 }
 
+const AUTOSCROLL_DELAY = 3000;
+const INITIAL_SCROLL_DELAY = 100;
+
 const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   const navigation = useNavigation<NavigationProp>();
-  const scrollViewRef = useRef<ScrollView>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const autoScrollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollRef = useRef<ScrollView>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Создаем бесконечный список слайдов
-  const infiniteSlides = slides.length > 0 
-    ? [slides[slides.length - 1], ...slides, slides[0]]
-    : [];
-    
-    // Автоскролл каждые 3 секунды
-  const startAutoScroll = () => {
-    autoScrollTimer.current = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const nextIndex = prev + 1;
-        if (nextIndex >= slides.length) {
-          scrollViewRef.current?.scrollTo({
-            x: slideWidth * (slides.length + 1),
-            animated: true,
-          });
-          return 0;
-        } else {
-          scrollViewRef.current?.scrollTo({
-            x: slideWidth * (nextIndex + 1),
-            animated: true,
-          });
-          return nextIndex;
-        }
+  const [index, setIndex] = useState(0);
+
+  const hasSlides = slides.length > 0;
+  const infiniteSlides = useMemo(() => {
+    if (!hasSlides) return [];
+    return [slides[slides.length - 1], ...slides, slides[0]];
+  }, [slides, hasSlides]);
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startAutoscroll = useCallback(() => {
+    clearTimer();
+    if (!hasSlides) return;
+
+    timerRef.current = setInterval(() => {
+      setIndex(prev => {
+        const next = prev + 1;
+        const reachedEnd = next >= slides.length;
+
+        const scrollTo = reachedEnd ? SLIDE_WIDTH * (slides.length + 1) : SLIDE_WIDTH * (next + 1);
+
+        scrollRef.current?.scrollTo({ x: scrollTo, animated: true });
+
+        return reachedEnd ? 0 : next;
       });
-    }, 3000);
-  };
+    }, AUTOSCROLL_DELAY);
+  }, [clearTimer, hasSlides, slides.length]);
 
   useEffect(() => {
-    if (slides.length === 0) return;
-    setTimeout(() => {
-      scrollViewRef.current?.scrollTo({
-        x: slideWidth,
-        animated: false,
-      });
-    }, 100);
+    if (!hasSlides) return;
 
-    startAutoScroll();
+    const timeout = setTimeout(() => {
+      scrollRef.current?.scrollTo({ x: SLIDE_WIDTH, animated: false });
+    }, INITIAL_SCROLL_DELAY);
+
+    startAutoscroll();
 
     return () => {
-      if (autoScrollTimer.current) {
-        clearInterval(autoScrollTimer.current);
-      }
+      clearTimeout(timeout);
+      clearTimer();
     };
-  }, [slides.length]);
+  }, [hasSlides, startAutoscroll, clearTimer]);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / slideWidth);
+  const handleScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: any; }; }; }) => {
+      const pos = e.nativeEvent.contentOffset.x;
+      const page = Math.round(pos / SLIDE_WIDTH);
 
-    // Обработка бесконечного скролла
-    if (index === 0) {
-      setTimeout(() => {
-        scrollViewRef.current?.scrollTo({
-          x: slideWidth * slides.length,
-          animated: false,
-        });
-      }, 50);
-    } else if (index === infiniteSlides.length - 1) {
-      setTimeout(() => {
-        scrollViewRef.current?.scrollTo({
-          x: slideWidth,
-          animated: false,
-        });
-      }, 50);
-    }
+      if (!hasSlides) return;
+
+      if (page === 0) {
+        setTimeout(() => {
+          scrollRef.current?.scrollTo({ x: SLIDE_WIDTH * slides.length, animated: false });
+        }, 20);
+      }
+
+      if (page === infiniteSlides.length - 1) {
+        setTimeout(() => {
+          scrollRef.current?.scrollTo({ x: SLIDE_WIDTH, animated: false });
+        }, 20);
+      }
+    },
+    [hasSlides, infiniteSlides.length, slides.length]
+  );
+
+  const handleMomentumEnd = useCallback(
+    (e: { nativeEvent: { contentOffset: { x: any; }; }; }) => {
+      const pos = e.nativeEvent.contentOffset.x;
+      const page = Math.round(pos / SLIDE_WIDTH);
+
+      if (page > 0 && page < infiniteSlides.length - 1) {
+        setIndex(page - 1);
+      }
+    },
+    [infiniteSlides.length]
+  );
+
+  const handlePress = (bookId: number) => {
+    navigation.navigate('BookDetails', { bookId: bookId });
   };
 
-  const handleMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    // Обновляем индекс только после завершения скролла
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / slideWidth);
-    
-    if (index > 0 && index < infiniteSlides.length - 1) {
-      setCurrentIndex(index - 1);
-    }
-  };
+  const onDragStart = useCallback(() => clearTimer(), [clearTimer]);
+  const onDragEnd = useCallback(() => startAutoscroll(), [startAutoscroll]);
 
-  const handleSlidePress = (slide: TopBannerSlide) => {
-    navigation.navigate('BookDetails', { bookId: slide.book_id });
-  };
-
-  const handleScrollBeginDrag = () => {
-    // Останавливаем автоскролл при ручном свайпе
-    if (autoScrollTimer.current) {
-      clearInterval(autoScrollTimer.current);
-      autoScrollTimer.current = null;
-    }
-  };
-
-  const handleScrollEndDrag = () => {
-    startAutoScroll();
-  };
-
-  if (slides.length === 0) {
-    return null;
-  }
+  if (!hasSlides) return null;
 
   return (
     <View style={styles.container}>
-      <View style={styles.bannerContainer}>
+      <View style={styles.banner}>
         <ScrollView
-          ref={scrollViewRef}
+          ref={scrollRef}
           horizontal
           pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          onMomentumScrollEnd={handleMomentumScrollEnd}
-          onScrollBeginDrag={handleScrollBeginDrag}
-          onScrollEndDrag={handleScrollEndDrag}
-          scrollEventThrottle={16}
           decelerationRate="fast"
-          snapToInterval={slideWidth}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.content}
+          snapToInterval={SLIDE_WIDTH}
           snapToAlignment="start"
-          contentContainerStyle={styles.scrollContent}>
-          {infiniteSlides.map((slide, index) => (
+          scrollEventThrottle={16}
+          onScroll={handleScroll}
+          onMomentumScrollEnd={handleMomentumEnd}
+          onScrollBeginDrag={onDragStart}
+          onScrollEndDrag={onDragEnd}
+        >
+          {infiniteSlides.map((slide, i) => (
             <TouchableOpacity
-              key={`${slide.id}-${index}`}
-              onPress={() => handleSlidePress(slide)}
-              activeOpacity={0.9}>
-              <Image
-                source={{ uri: slide.cover }}
-                style={styles.slideImage}
-                resizeMode="cover"
-              />
+              key={`${slide.id}-${i}`}
+              activeOpacity={0.9}
+              onPress={() => handlePress(slide.book_id)}
+            >
+              <Image source={{ uri: slide.cover }} style={styles.image} resizeMode="cover" />
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <View style={styles.indicatorContainer}>
-          {slides.map((_, index) => (
+        <View style={styles.indicators}>
+          {slides.map((_, i) => (
             <View
-              key={index}
-              style={[
-                styles.indicator,
-                index === currentIndex && styles.activeIndicator,
-              ]}
+              key={i}
+              style={[styles.dot, i === index && styles.dotActive]}
             />
           ))}
         </View>
@@ -175,43 +164,40 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
     paddingHorizontal: 16,
+    marginBottom: 16,
   },
-  bannerContainer: {
+  banner: {
     height: 160,
-    backgroundColor: colors.imageBackground,
     borderRadius: 16,
+    backgroundColor: colors.imageBackground,
     overflow: 'hidden',
-    position: 'relative',
   },
-  scrollContent: {
+  content: {
     paddingHorizontal: 0,
   },
-  slideImage: {
-    width: slideWidth,
+  image: {
+    width: SLIDE_WIDTH,
     height: 160,
   },
-  indicatorContainer: {
+  indicators: {
     position: 'absolute',
     bottom: 8,
     left: 0,
     right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
     gap: 10,
   },
-  indicator: {
+  dot: {
     width: 7,
     height: 7,
     borderRadius: 3.5,
     backgroundColor: '#C1C2CA',
   },
-  activeIndicator: {
+  dotActive: {
     backgroundColor: '#D0006E',
   },
 });
 
 export default TopBanner;
-
