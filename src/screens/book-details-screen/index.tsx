@@ -75,7 +75,7 @@ const DetailsScreen: React.FC = () => {
   }
 
   return (
-     <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={[styles.header, { top: insets.top + 20 }]}>
         <BackButton />
       </View>
