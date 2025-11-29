@@ -5,6 +5,7 @@ import {
   Animated,
   Text,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,9 +16,12 @@ import RNBootSplash from 'react-native-bootsplash';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const progressMaxWidth = SCREEN_WIDTH - 64;
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -36,8 +40,6 @@ const SplashScreen: React.FC = () => {
       }
     };
 
-    initConfig();
-
     Animated.loop(
       Animated.sequence([
         Animated.timing(progressAnim, {
@@ -53,6 +55,8 @@ const SplashScreen: React.FC = () => {
       ]),
     ).start();
 
+    initConfig();
+
     const timer = setTimeout(() => {
       navigation.replace('Main');
     }, 2000);
@@ -62,7 +66,7 @@ const SplashScreen: React.FC = () => {
 
   const progressWidth = progressAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 274],
+    outputRange: [0, progressMaxWidth > 274 ? 274 : progressMaxWidth],
   });
 
   return (
@@ -110,17 +114,20 @@ const styles = StyleSheet.create({
   },
   splashTitle: {
     ...fonts.splashTitle,
+    fontSize: SCREEN_WIDTH < 338 ? 40 : 52,
     marginBottom: 12,
   },
   splashSubtitle: {
     ...fonts.splashSubtitle,
+    fontSize: SCREEN_WIDTH < 338 ? 20 : 24,
     marginBottom: 48,
   },
   progressBarContainer: {
     alignItems: 'center',
   },
   progressBarBackground: {
-    width: 274,
+    width: SCREEN_WIDTH - 64,
+    maxWidth: 274,
     height: 6,
     borderRadius: 6,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',

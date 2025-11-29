@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  Dimensions,
 } from 'react-native';
 import { colors, fonts } from '../theme';
 
@@ -14,6 +15,8 @@ interface PrimaryButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   text,
@@ -34,8 +37,9 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: 278,
+    width: SCREEN_WIDTH - 64,
     height: 48,
+    maxWidth: 278,
     borderRadius: 30,
     backgroundColor: colors.button,
     justifyContent: 'center',
