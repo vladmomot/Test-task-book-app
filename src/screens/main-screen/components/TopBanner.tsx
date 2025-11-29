@@ -12,17 +12,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../../theme';
 import { RootStackParamList, TopBannerSlide } from '../../../types';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const SLIDE_WIDTH = SCREEN_WIDTH - 32;
-
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
 interface TopBannerProps {
   slides: TopBannerSlide[];
 }
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const SLIDE_WIDTH = SCREEN_WIDTH - 32;
 const AUTOSCROLL_DELAY = 3000;
-const INITIAL_SCROLL_DELAY = 100;
 
 const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   const navigation = useNavigation<NavigationProp>();
@@ -46,17 +43,15 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
   const startAutoscroll = useCallback(() => {
     clearTimer();
+
     if (!hasSlides) return;
 
     timerRef.current = setInterval(() => {
       setIndex(prev => {
         const next = prev + 1;
         const reachedEnd = next >= slides.length;
-
         const scrollTo = reachedEnd ? SLIDE_WIDTH * (slides.length + 1) : SLIDE_WIDTH * (next + 1);
-
         scrollRef.current?.scrollTo({ x: scrollTo, animated: true });
-
         return reachedEnd ? 0 : next;
       });
     }, AUTOSCROLL_DELAY);
@@ -67,7 +62,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
     const timeout = setTimeout(() => {
       scrollRef.current?.scrollTo({ x: SLIDE_WIDTH, animated: false });
-    }, INITIAL_SCROLL_DELAY);
+    }, 100);
 
     startAutoscroll();
 
@@ -78,19 +73,19 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   }, [hasSlides, startAutoscroll, clearTimer]);
 
   const handleScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { x: any; }; }; }) => {
-      const pos = e.nativeEvent.contentOffset.x;
-      const page = Math.round(pos / SLIDE_WIDTH);
+    (e: any) => {
+      const position = e.nativeEvent.contentOffset.x;
+      const slide = Math.round(position / SLIDE_WIDTH);
 
       if (!hasSlides) return;
 
-      if (page === 0) {
+      if (slide === 0) {
         setTimeout(() => {
           scrollRef.current?.scrollTo({ x: SLIDE_WIDTH * slides.length, animated: false });
         }, 20);
       }
 
-      if (page === infiniteSlides.length - 1) {
+      if (slide === infiniteSlides.length - 1) {
         setTimeout(() => {
           scrollRef.current?.scrollTo({ x: SLIDE_WIDTH, animated: false });
         }, 20);
@@ -100,12 +95,12 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   );
 
   const handleMomentumEnd = useCallback(
-    (e: { nativeEvent: { contentOffset: { x: any; }; }; }) => {
-      const pos = e.nativeEvent.contentOffset.x;
-      const page = Math.round(pos / SLIDE_WIDTH);
+    (e: any) => {
+      const position = e.nativeEvent.contentOffset.x;
+      const slide = Math.round(position / SLIDE_WIDTH);
 
-      if (page > 0 && page < infiniteSlides.length - 1) {
-        setIndex(page - 1);
+      if (slide > 0 && slide < infiniteSlides.length - 1) {
+        setIndex(slide - 1);
       }
     },
     [infiniteSlides.length]
