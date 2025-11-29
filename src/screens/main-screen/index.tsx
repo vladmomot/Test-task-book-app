@@ -4,12 +4,13 @@ import {
   StyleSheet,
   ScrollView,
   Text,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book, TopBannerSlide } from '../../types';
-import remoteConfigService from '../../services/remoteConfig';
+import { getJsonData, updateData } from '../../services/remoteConfig';
 import TopBanner from './components/TopBanner';
 import GenreSection from './components/GenreSection';
 import { colors, fonts } from '../../theme';
@@ -20,6 +21,7 @@ const MainScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [topBannerSlides, setTopBannerSlides] = useState<TopBannerSlide[]>([]);
   const [booksByGenre, setBooksByGenre] = useState<Record<string, Book[]>>({});
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
     loadData();
@@ -27,7 +29,7 @@ const MainScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const jsonData = remoteConfigService.getJsonData();
+      const jsonData = getJsonData();
       setTopBannerSlides(jsonData.top_banner_slides || []);
 
       const grouped: Record<string, Book[]> = {};
@@ -47,12 +49,31 @@ const MainScreen: React.FC = () => {
     navigation.navigate('BookDetails', { bookId });
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await updateData();
+      loadData();
+    } catch {
+      setRefreshing(false);
+    }
+    setRefreshing(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
+        }
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>

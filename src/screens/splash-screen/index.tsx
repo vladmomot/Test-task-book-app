@@ -9,7 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
-import remoteConfigService from '../../services/remoteConfig';
+import { initRemoteConfig } from '../../services/remoteConfig';
 import { fonts, images } from '../../theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
@@ -19,15 +19,15 @@ const SplashScreen: React.FC = () => {
   const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const initRemoteConfig = async () => {
+    const initConfig = async () => {
       try {
-        await remoteConfigService.initialize();
+        await initRemoteConfig();
       } catch (error) {
         console.error('Failed to initialize Remote Config:', error);
       }
     };
 
-    initRemoteConfig();
+    initConfig();
 
     Animated.loop(
       Animated.sequence([

@@ -9,7 +9,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
-import remoteConfigService from '../../services/remoteConfig';
+import { getDetailsCarousel, getJsonData } from '../../services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
 import StatsContainer from './components/StatsContainer';
@@ -36,14 +36,14 @@ const DetailsScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const jsonData = remoteConfigService.getJsonData();
+      const jsonData = getJsonData();
       const allBooks = jsonData.books || [];
       
       const foundBook = allBooks.find((book: Book) => book.id === bookId);
       if (foundBook) {
         setCurrentBook(foundBook);
       }
-      const carousel = remoteConfigService.getDetailsCarousel();
+      const carousel = getDetailsCarousel();
       setCarouselBooks(carousel.books.length > 0 ? carousel.books : []);
 
       const youWillLikeIds = jsonData.you_will_like_section || [];

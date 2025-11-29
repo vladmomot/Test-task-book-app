@@ -1,75 +1,69 @@
-import remoteConfig from '@react-native-firebase/remote-config';
+import { getApp } from '@react-native-firebase/app';
+import {
+  getRemoteConfig,
+  fetchAndActivate,
+  getValue,
+  setDefaults,
+  setConfigSettings,
+} from '@react-native-firebase/remote-config';
 import { JsonData, CarouselData } from '../types';
 
-class RemoteConfigService {
-  private static instance: RemoteConfigService;
-  private config: ReturnType<typeof remoteConfig>;
-  private isInitialized: boolean = false;
+const app = getApp();
+const rc = getRemoteConfig(app);
 
-  private constructor() {
-    this.config = remoteConfig();
-  }
-
-  public static getInstance(): RemoteConfigService {
-    if (!RemoteConfigService.instance) {
-      RemoteConfigService.instance = new RemoteConfigService();
-    }
-    return RemoteConfigService.instance;
-  }
-
-  async initialize(): Promise<void> {
-    if (this.isInitialized) {
-      return;
-    }
-
-    try {
-      await this.config.setDefaults({
-        json_data: JSON.stringify({
-          books: [],
-          top_banner_slides: [],
-          you_will_like_section: [],
-        }),
-        details_carousel: JSON.stringify([]),
-      });
-
-      await this.config.setConfigSettings({
-        minimumFetchIntervalMillis: __DEV__ ? 0 : 3600000,
-      });
-
-      await this.config.fetchAndActivate();
-
-      this.isInitialized = true;
-    } catch (error: any) {
-      console.error('Error initializing Remote Config:', error);
-      this.isInitialized = true;
-    }
-  }
-
-  getJsonData(): JsonData {
-    try {
-      const jsonDataString = this.config.getValue('json_data').asString();
-      return JSON.parse(jsonDataString);
-    } catch (error) {
-      console.error('Error getting json_data:', error);
-      return {
+export async function initRemoteConfig() {
+  try {
+    setDefaults(rc, {
+      json_data: JSON.stringify({
         books: [],
         top_banner_slides: [],
         you_will_like_section: [],
-      };
-    }
-  }
-
-  getDetailsCarousel(): CarouselData {
-    try {
-      const carouselString = this.config.getValue('details_carousel').asString();
-      return JSON.parse(carouselString);
-    } catch (error) {
-      console.error('Error getting details_carousel:', error);
-      return {
+      }),
+      details_carousel: JSON.stringify({
         books: [],
-      };
-    }
+      }
+      ),
+    });
+
+    setConfigSettings(rc, {
+      minimumFetchIntervalMillis: 0,
+    });
+
+    await fetchAndActivate(rc);
+  } catch (e) {
+    console.error('RC init error:', e);
   }
 }
 
-export default RemoteConfigService.getInstance();
+export async function updateData() {
+  try {
+    await fetchAndActivate(rc);
+  } catch (e) {
+    console.error('RC update error:', e);
+  }
+}
+
+
+export function getJsonData(): JsonData {
+  try {
+    const value = getValue(rc, 'json_data').asString();
+    return JSON.parse(value);
+  } catch (e) {
+    console.error('getJsonData error:', e);
+    return {
+      books: [],
+      top_banner_slides: [],
+      you_will_like_section: [],
+    };
+  }
+}
+
+export function getDetailsCarousel(): CarouselData {
+  try {
+    const value = getValue(rc, 'details_carousel').asString();
+    return JSON.parse(value);
+  } catch (e) {
+    console.error('getDetailsCarousel error:', e);
+    return { books: [] };
+  }
+}
