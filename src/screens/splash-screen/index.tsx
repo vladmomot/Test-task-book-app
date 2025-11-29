@@ -40,7 +40,7 @@ const SplashScreen: React.FC = () => {
       Animated.sequence([
         Animated.timing(progressAnim, {
           toValue: 1,
-          duration: 2000,
+          duration: 2200,
           useNativeDriver: false,
         }),
         Animated.timing(progressAnim, {
