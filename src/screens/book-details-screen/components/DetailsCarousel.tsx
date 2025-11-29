@@ -14,6 +14,7 @@ import Animated, {
   useAnimatedScrollHandler,
   interpolate,
   runOnJS,
+  SharedValue,
 } from 'react-native-reanimated';
 import { Book } from '../../../types';
 import { images, colors, fonts } from '../../../theme';
@@ -26,7 +27,13 @@ const SCALE = 0.8;
 const ITEM_SIZE = LARGE_W;
 const INITIAL_PADDING = (SCREEN_WIDTH - LARGE_W) / 2;
 
-const CarouselCard = ({ book, index, scrollX }: any) => {
+interface CarouselCardProps {
+  book: Book;
+  index: number;
+  scrollX: SharedValue<number>;
+}
+
+const CarouselCard = ({ book, index, scrollX }: CarouselCardProps) => {
   const animatedStyle = useAnimatedStyle(() => {
     const diff = scrollX.value - ITEM_SIZE * index;
     const distance = Math.abs(diff);
@@ -55,7 +62,13 @@ const CarouselCard = ({ book, index, scrollX }: any) => {
   );
 };
 
-const DetailsCarousel = ({ books, onBookChange, initialBookId }: any) => {
+interface DetailsCarouselProps {
+  books: Book[];
+  onBookChange: (book: Book) => void;
+  initialBookId?: number;
+}
+
+const DetailsCarousel = ({ books, onBookChange, initialBookId }: DetailsCarouselProps) => {
   const scrollViewRef = useRef<Animated.ScrollView>(null);
   const scrollX = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);

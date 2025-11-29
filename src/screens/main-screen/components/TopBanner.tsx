@@ -6,6 +6,8 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -73,7 +75,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   }, [hasSlides, startAutoscroll, clearTimer]);
 
   const handleScroll = useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
       const position = e.nativeEvent.contentOffset.x;
       const slide = Math.round(position / SLIDE_WIDTH);
 
@@ -95,7 +97,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
   );
 
   const handleMomentumEnd = useCallback(
-    (e: any) => {
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
       const position = e.nativeEvent.contentOffset.x;
       const slide = Math.round(position / SLIDE_WIDTH);
 
