@@ -4,18 +4,20 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  ImageBackground,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, Book } from '../../types';
-import { getDetailsCarousel, getJsonData } from '../../services/remoteConfig';
+import { getDetailsCarousel, getJsonData, updateData } from '../../services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
 import StatsContainer from './components/StatsContainer';
 import PrimaryButton from '../../components/Button';
 import BackButton from '../../components/BackButton';
-import { colors, fonts } from '../../theme';
+import { colors, fonts, images } from '../../theme';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -29,6 +31,7 @@ const DetailsScreen: React.FC = () => {
   const [currentBook, setCurrentBook] = useState<Book | null>(null);
   const [carouselBooks, setCarouselBooks] = useState<Book[]>([]);
   const [youWillLikeBooks, setYouWillLikeBooks] = useState<Book[]>([]);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
     loadData();
@@ -64,12 +67,32 @@ const DetailsScreen: React.FC = () => {
     navigation.replace('BookDetails', { bookId: pressedBookId });
   };
 
+  const onRefresh = async () => {
+      setRefreshing(true);
+      try {
+        await updateData();
+        loadData();
+      } catch {
+        setRefreshing(false);
+      }
+      setRefreshing(false);
+  };
+
   if (!currentBook) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.emptyContainer}>
-          <Text>Book not found</Text>
-        </View>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        <ImageBackground
+          source={images.bgDetailItem}
+          style={styles.emptyImage}
+          resizeMode="cover"
+         >
+          <View style={[styles.header, { top: insets.top + 20 }]}>
+            <BackButton />
+          </View>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>{`Book not found :(`}</Text>
+          </View>
+        </ImageBackground>
       </SafeAreaView>
     );
   }
@@ -81,7 +104,16 @@ const DetailsScreen: React.FC = () => {
       </View>
       <ScrollView
         style={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
+        }
+      >
         <DetailsCarousel
           books={carouselBooks}
           onBookChange={handleCarouselBookChange}
@@ -123,6 +155,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  emptyText: {
+    ...fonts.h1,
+    color: colors.white,
+  },
+  emptyImage: {
+    height: '100%', 
+    width: '100%',
   },
   header: {
     position: 'absolute',

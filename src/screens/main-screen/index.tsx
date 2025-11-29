@@ -59,35 +59,47 @@ const MainScreen: React.FC = () => {
     }
     setRefreshing(false);
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContainer}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.primary}
-            colors={[colors.primary]}
-          />
-        }
-      >
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Library</Text>
-        </View>
-        <TopBanner slides={topBannerSlides} />
-        {Object.entries(booksByGenre).map(([genre, genreBooks]) => (
-          <GenreSection
-            key={genre}
-            genre={genre}
-            books={genreBooks}
-            onBookPress={handleBookPress}
-          />
-        ))}
-      </ScrollView>
+      {Object.keys(booksByGenre).length === 0 ? (
+        <>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Library</Text>
+          </View>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Books not found</Text>
+          </View>
+        </>
+      ) : (
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
+        >
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Library</Text>
+          </View>
+          <TopBanner slides={topBannerSlides} />
+          {Object.entries(booksByGenre).map(([genre, genreBooks]) => (
+            <GenreSection
+              key={genre}
+              genre={genre}
+              books={genreBooks}
+              onBookPress={handleBookPress}
+            />
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -96,6 +108,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  emptyContainer: {
+    flex: 1,
+    minHeight: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    ...fonts.h1,
+    color: colors.white,
   },
   scrollView: {
     flex: 1,
