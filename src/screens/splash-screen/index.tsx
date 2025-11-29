@@ -17,11 +17,11 @@ import RNBootSplash from 'react-native-bootsplash';
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const PROGRESS_WIDTH = SCREEN_WIDTH - 64;
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const progressMaxWidth = SCREEN_WIDTH - 64;
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -66,7 +66,7 @@ const SplashScreen: React.FC = () => {
 
   const progressWidth = progressAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, progressMaxWidth > 274 ? 274 : progressMaxWidth],
+    outputRange: [0, PROGRESS_WIDTH > 274 ? 274 : PROGRESS_WIDTH],
   });
 
   return (
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   progressBarBackground: {
-    width: SCREEN_WIDTH - 64,
+    width: PROGRESS_WIDTH,
     maxWidth: 274,
     height: 6,
     borderRadius: 6,
