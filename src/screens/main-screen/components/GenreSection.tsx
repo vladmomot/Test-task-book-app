@@ -27,12 +27,8 @@ const GenreSection: React.FC<GenreSectionProps> = ({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {books.map((book) => (
-          <BookCard
-            key={book.id}
-            book={book}
-            onPress={onBookPress}
-          />
+        {books.map(book => (
+          <BookCard key={book.id} book={book} onPress={onBookPress} />
         ))}
       </ScrollView>
     </View>
@@ -47,13 +43,12 @@ const styles = StyleSheet.create({
     ...fonts.h1,
     color: colors.white,
     marginBottom: 16,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   scrollContent: {
     paddingHorizontal: 16,
-    gap: 8
+    gap: 8,
   },
 });
 
 export default GenreSection;
-

@@ -15,7 +15,8 @@ const AppNavigator: React.FC = () => {
         initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
-        }}>
+        }}
+      >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="BookDetails" component={BookDetailsScreen} />
@@ -25,4 +26,3 @@ const AppNavigator: React.FC = () => {
 };
 
 export default AppNavigator;
-

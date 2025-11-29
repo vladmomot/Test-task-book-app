@@ -7,12 +7,19 @@ import {
   ImageBackground,
   RefreshControl,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { RootStackParamList, Book } from '../../types';
-import { getDetailsCarousel, getJsonData, updateData } from '../../services/remoteConfig';
+import {
+  getDetailsCarousel,
+  getJsonData,
+  updateData,
+} from '../../services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
 import StatsContainer from './components/StatsContainer';
@@ -42,7 +49,7 @@ const DetailsScreen: React.FC = () => {
     try {
       const jsonData = getJsonData();
       const allBooks = jsonData.books || [];
-      
+
       const foundBook = allBooks.find((book: Book) => book.id === bookId);
       if (foundBook) {
         setCurrentBook(foundBook);
@@ -77,14 +84,14 @@ const DetailsScreen: React.FC = () => {
   };
 
   const onRefresh = async () => {
-      setRefreshing(true);
-      try {
-        await updateData();
-        loadData();
-      } catch {
-        setRefreshing(false);
-      }
+    setRefreshing(true);
+    try {
+      await updateData();
+      loadData();
+    } catch {
       setRefreshing(false);
+    }
+    setRefreshing(false);
   };
 
   if (!currentBook) {
@@ -94,7 +101,7 @@ const DetailsScreen: React.FC = () => {
           source={images.bgDetailItem}
           style={styles.emptyImage}
           resizeMode="cover"
-         >
+        >
           <View style={[styles.header, { top: insets.top + 20 }]}>
             <BackButton />
           </View>
@@ -126,18 +133,18 @@ const DetailsScreen: React.FC = () => {
         <DetailsCarousel
           books={carouselBooks}
           onBookChange={handleCarouselBookChange}
-          initialBookId={bookId} 
+          initialBookId={bookId}
         />
         <View style={styles.content}>
           <View style={styles.sumaryContent}>
-            <StatsContainer 
+            <StatsContainer
               stats={[
-                { value: currentBook.views, label: 'Readers' }, 
+                { value: currentBook.views, label: 'Readers' },
                 { value: currentBook.likes, label: 'Likes' },
                 { value: currentBook.quotes, label: 'Quotes' },
-                { value: currentBook.genre, label: 'Genre' }, 
+                { value: currentBook.genre, label: 'Genre' },
               ]}
-            /> 
+            />
             <View style={[styles.divider, { marginTop: 10 }]} />
             <View>
               <Text style={styles.summaryTitle}>Summary</Text>
@@ -149,7 +156,11 @@ const DetailsScreen: React.FC = () => {
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
           />
-          <PrimaryButton text="Read Now" style={styles.readButton} onPress={handleReadNowPress} />
+          <PrimaryButton
+            text="Read Now"
+            style={styles.readButton}
+            onPress={handleReadNowPress}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -170,7 +181,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   emptyImage: {
-    height: '100%', 
+    height: '100%',
     width: '100%',
   },
   header: {
@@ -180,7 +191,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   readButton: {
-    marginTop: 24
+    marginTop: 24,
   },
   scrollView: {
     flex: 1,
@@ -213,4 +224,3 @@ const styles = StyleSheet.create({
 });
 
 export default DetailsScreen;
-

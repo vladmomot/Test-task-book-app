@@ -31,4 +31,3 @@ export type RootStackParamList = {
   Main: undefined;
   BookDetails: { bookId: number };
 };
-

@@ -21,8 +21,7 @@ export async function initRemoteConfig() {
       }),
       details_carousel: JSON.stringify({
         books: [],
-      }
-      ),
+      }),
     });
 
     setConfigSettings(rc, {
@@ -42,7 +41,6 @@ export async function updateData() {
     console.error('RC update error:', e);
   }
 }
-
 
 export function getJsonData(): JsonData {
   try {

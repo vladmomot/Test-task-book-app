@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   View,
   StyleSheet,
@@ -38,13 +44,15 @@ const CarouselCard = ({ book, index, scrollX }: CarouselCardProps) => {
     const diff = scrollX.value - ITEM_SIZE * index;
     const distance = Math.abs(diff);
     const scale = interpolate(distance, [0, ITEM_SIZE], [1, SCALE], 'clamp');
-    const opacity = interpolate(distance, [0, ITEM_SIZE * 0.8], [1, 0.7], 'clamp');
+    const opacity = interpolate(
+      distance,
+      [0, ITEM_SIZE * 0.8],
+      [1, 0.7],
+      'clamp',
+    );
 
     return {
-      transform: [
-        { scaleX: scale },
-        { scaleY: scale },
-      ],
+      transform: [{ scaleX: scale }, { scaleY: scale }],
       opacity,
     };
   });
@@ -68,7 +76,11 @@ interface DetailsCarouselProps {
   initialBookId?: number;
 }
 
-const DetailsCarousel = ({ books, onBookChange, initialBookId }: DetailsCarouselProps) => {
+const DetailsCarousel = ({
+  books,
+  onBookChange,
+  initialBookId,
+}: DetailsCarouselProps) => {
   const scrollViewRef = useRef<Animated.ScrollView>(null);
   const scrollX = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -93,19 +105,22 @@ const DetailsCarousel = ({ books, onBookChange, initialBookId }: DetailsCarousel
     (offsetX: number) => {
       const newIndex = Math.round(offsetX / ITEM_SIZE);
 
-      setCurrentIndex((prev) => {
-        const safeIndex = Math.max(0, Math.min(newIndex, reorderedBooks.length - 1));
+      setCurrentIndex(prev => {
+        const safeIndex = Math.max(
+          0,
+          Math.min(newIndex, reorderedBooks.length - 1),
+        );
         if (safeIndex !== prev) {
           requestAnimationFrame(() => onBookChange(reorderedBooks[safeIndex]));
         }
         return safeIndex;
       });
     },
-    [reorderedBooks, onBookChange]
+    [reorderedBooks, onBookChange],
   );
 
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
+    onScroll: event => {
       scrollX.value = event.contentOffset.x;
       runOnJS(updateCurrentIndex)(event.contentOffset.x);
     },
@@ -119,7 +134,7 @@ const DetailsCarousel = ({ books, onBookChange, initialBookId }: DetailsCarousel
   };
 
   if (reorderedBooks.length === 0) return null;
-  
+
   const currentBook = reorderedBooks[currentIndex];
 
   return (

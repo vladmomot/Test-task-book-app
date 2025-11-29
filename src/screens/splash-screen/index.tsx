@@ -48,7 +48,7 @@ const SplashScreen: React.FC = () => {
           duration: 10,
           useNativeDriver: false,
         }),
-      ])
+      ]),
     ).start();
 
     initConfig();
@@ -74,7 +74,8 @@ const SplashScreen: React.FC = () => {
       <ImageBackground
         source={images.bgSplashHeart}
         style={styles.heartLayer}
-        resizeMode="cover">
+        resizeMode="cover"
+      >
         <View style={styles.content}>
           <Text style={styles.splashTitle}>Book App</Text>
           <Text style={styles.splashSubtitle}>Welcome to Book App</Text>

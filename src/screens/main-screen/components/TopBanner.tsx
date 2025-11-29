@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   View,
   ScrollView,
@@ -52,7 +58,9 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
       setIndex(prev => {
         const next = prev + 1;
         const reachedEnd = next >= slides.length;
-        const scrollTo = reachedEnd ? SLIDE_WIDTH * (slides.length + 1) : SLIDE_WIDTH * (next + 1);
+        const scrollTo = reachedEnd
+          ? SLIDE_WIDTH * (slides.length + 1)
+          : SLIDE_WIDTH * (next + 1);
         scrollRef.current?.scrollTo({ x: scrollTo, animated: true });
         return reachedEnd ? 0 : next;
       });
@@ -83,7 +91,10 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
 
       if (slide === 0) {
         setTimeout(() => {
-          scrollRef.current?.scrollTo({ x: SLIDE_WIDTH * slides.length, animated: false });
+          scrollRef.current?.scrollTo({
+            x: SLIDE_WIDTH * slides.length,
+            animated: false,
+          });
         }, 20);
       }
 
@@ -93,7 +104,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
         }, 20);
       }
     },
-    [hasSlides, infiniteSlides.length, slides.length]
+    [hasSlides, infiniteSlides.length, slides.length],
   );
 
   const handleMomentumEnd = useCallback(
@@ -105,7 +116,7 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
         setIndex(slide - 1);
       }
     },
-    [infiniteSlides.length]
+    [infiniteSlides.length],
   );
 
   const handlePress = (bookId: number) => {
@@ -141,8 +152,8 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
               activeOpacity={0.9}
               onPress={() => handlePress(slide.book_id)}
             >
-              <Image 
-                source={{ uri: slide.cover }} 
+              <Image
+                source={{ uri: slide.cover }}
                 style={styles.image}
                 resizeMode="cover"
               />

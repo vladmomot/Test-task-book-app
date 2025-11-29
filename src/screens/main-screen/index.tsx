@@ -59,47 +59,41 @@ const MainScreen: React.FC = () => {
     }
     setRefreshing(false);
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>
-      {Object.keys(booksByGenre).length === 0 ? (
-        <>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Library</Text>
-          </View>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
+        }
+      >
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Library</Text>
+        </View>
+        <TopBanner slides={topBannerSlides} />
+        {Object.keys(booksByGenre).length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>Books not found</Text>
           </View>
-        </>
-      ) : (
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContainer}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={colors.primary}
-              colors={[colors.primary]}
-            />
-          }
-        >
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Library</Text>
-          </View>
-          <TopBanner slides={topBannerSlides} />
-          {Object.entries(booksByGenre).map(([genre, genreBooks]) => (
+        ) : (
+          Object.entries(booksByGenre).map(([genre, genreBooks]) => (
             <GenreSection
               key={genre}
               genre={genre}
               books={genreBooks}
               onBookPress={handleBookPress}
             />
-          ))}
-        </ScrollView>
-      )}
+          ))
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -111,7 +105,7 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    minHeight: '50%',
+    minHeight: '75%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -136,4 +130,3 @@ const styles = StyleSheet.create({
 });
 
 export default MainScreen;
-

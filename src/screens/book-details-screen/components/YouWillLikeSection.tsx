@@ -25,7 +25,7 @@ const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {books.map((book) => (
+        {books.map(book => (
           <BookCard
             key={book.id}
             book={book}
@@ -52,4 +52,3 @@ const styles = StyleSheet.create({
 });
 
 export default YouWillLikeSection;
-

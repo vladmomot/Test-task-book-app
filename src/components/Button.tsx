@@ -1,5 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { colors, fonts } from '../theme';
 
 interface PrimaryButtonProps {
@@ -9,11 +15,16 @@ interface PrimaryButtonProps {
   textStyle?: TextStyle;
 }
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text, onPress, style, textStyle }) => {
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({
+  text,
+  onPress,
+  style,
+  textStyle,
+}) => {
   return (
-    <TouchableOpacity 
-      style={[styles.button, style]} 
-      onPress={onPress} 
+    <TouchableOpacity
+      style={[styles.button, style]}
+      onPress={onPress}
       activeOpacity={0.8}
     >
       <Text style={[styles.buttonText, textStyle]}>{text}</Text>
@@ -38,4 +49,3 @@ const styles = StyleSheet.create({
 });
 
 export default PrimaryButton;
-

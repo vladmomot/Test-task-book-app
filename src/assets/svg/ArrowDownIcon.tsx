@@ -25,4 +25,3 @@ const ArrowDownIcon: React.FC<ArrowDownIconProps> = ({
 };
 
 export default ArrowDownIcon;
-
