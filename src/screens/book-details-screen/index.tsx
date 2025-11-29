@@ -10,6 +10,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Toast from 'react-native-toast-message';
 import { RootStackParamList, Book } from '../../types';
 import { getDetailsCarousel, getJsonData, updateData } from '../../services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
@@ -65,6 +66,14 @@ const DetailsScreen: React.FC = () => {
 
   const handleBookPress = (pressedBookId: number) => {
     navigation.replace('BookDetails', { bookId: pressedBookId });
+  };
+
+  const handleReadNowPress = () => {
+    Toast.show({
+      type: 'info',
+      text1: 'Coming soon :)',
+      position: 'bottom',
+    });
   };
 
   const onRefresh = async () => {
@@ -140,7 +149,7 @@ const DetailsScreen: React.FC = () => {
             books={youWillLikeBooks}
             onBookPress={handleBookPress}
           />
-          <PrimaryButton text="Read Now" style={styles.readButton} />
+          <PrimaryButton text="Read Now" style={styles.readButton} onPress={handleReadNowPress} />
         </View>
       </ScrollView>
     </SafeAreaView>
