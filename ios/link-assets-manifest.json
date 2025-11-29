@@ -6,28 +6,12 @@
       "sha1": "c093a9eabcf4e3c233afef89285f1662798d2086"
     },
     {
-      "path": "src/assets/fonts/NunitoSans-Black.ttf",
-      "sha1": "4b813c20aa9923b044d3708bf9c9adfd4fc9e2a8"
-    },
-    {
       "path": "src/assets/fonts/NunitoSans-Bold.ttf",
       "sha1": "eab9f3759631038e4e56993afdab3e66074a745c"
     },
     {
-      "path": "src/assets/fonts/NunitoSans-Light.ttf",
-      "sha1": "3a09593f6843696130290ee0602c73c56d55a278"
-    },
-    {
-      "path": "src/assets/fonts/NunitoSans-Regular.ttf",
-      "sha1": "07b4c2b2a3db6c1b5b54b9b3c46cb713d65d9d63"
-    },
-    {
       "path": "src/assets/fonts/NunitoSans-SemiBold.ttf",
       "sha1": "b83505912d818c983a5afdaf3555bd6a6b2595a1"
-    },
-    {
-      "path": "src/assets/fonts/NunitoSans.ttf",
-      "sha1": "8c01360cd531b3c1988d314db01656c8ef45207c"
     }
   ]
 }

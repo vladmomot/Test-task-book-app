@@ -34,7 +34,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -54,11 +54,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Georgia.ttf</string>
-		<string>NunitoSans.ttf</string>
-		<string>NunitoSans-Regular.ttf</string>
-		<string>NunitoSans-Black.ttf</string>
 		<string>NunitoSans-Bold.ttf</string>
-		<string>NunitoSans-Light.ttf</string>
 		<string>NunitoSans-SemiBold.ttf</string>
 	</array>
 </dict>
