@@ -36,6 +36,8 @@ const SplashScreen: React.FC = () => {
       }
     };
 
+    initConfig();
+
     Animated.loop(
       Animated.sequence([
         Animated.timing(progressAnim, {
@@ -50,8 +52,6 @@ const SplashScreen: React.FC = () => {
         }),
       ]),
     ).start();
-
-    initConfig();
 
     const timer = setTimeout(() => {
       navigation.replace('Main');
