@@ -2,6 +2,7 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
+import RNBootSplash
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,6 +41,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       in: window,
       launchOptions: launchOptions
     )
+    
+    // Initialize BootSplash after React Native is started
+    DispatchQueue.main.async {
+      if let rootViewController = self.window?.rootViewController {
+        RNBootSplash.initWithStoryboard("BootSplash", rootView: rootViewController.view)
+      }
+    }
 
     return true
   }

@@ -11,12 +11,21 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 import { initRemoteConfig } from '../../services/remoteConfig';
 import { fonts, images } from '../../theme';
+import RNBootSplash from 'react-native-bootsplash';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        RNBootSplash.hide({ fade: true });
+      }, 200);
+    });
+  }, []);
 
   useEffect(() => {
     const initConfig = async () => {
@@ -26,8 +35,6 @@ const SplashScreen: React.FC = () => {
         console.error('Failed to initialize Remote Config:', error);
       }
     };
-
-    initConfig();
 
     Animated.loop(
       Animated.sequence([
@@ -43,6 +50,8 @@ const SplashScreen: React.FC = () => {
         }),
       ])
     ).start();
+
+    initConfig();
 
     const timer = setTimeout(() => {
       navigation.replace('Main');

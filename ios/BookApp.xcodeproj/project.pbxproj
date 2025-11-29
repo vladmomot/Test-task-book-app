@@ -18,6 +18,8 @@
 		420F884B76524C2984D62ECA /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 679D94FD744441C0B7A2F074 /* NunitoSans-Bold.ttf */; };
 		8D260D44181F46AC9DAAD8C6 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 774046D78F3243D5A34614B8 /* NunitoSans-Light.ttf */; };
 		496F4DC3AAA44AB8A7392CDC /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25BECAACC7174633B120C5C9 /* NunitoSans-SemiBold.ttf */; };
+		5DD03F107A9E43B1995AAD1E /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11E4FB79C16F400C94B51FFC /* BootSplash.storyboard */; };
+		F80C47BD584F4575B1885C5F /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 868B5EA933924324A5C89C76 /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		679D94FD744441C0B7A2F074 /* NunitoSans-Bold.ttf */ = {isa = PBXFileReference; name = "NunitoSans-Bold.ttf"; path = "../src/assets/fonts/NunitoSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		774046D78F3243D5A34614B8 /* NunitoSans-Light.ttf */ = {isa = PBXFileReference; name = "NunitoSans-Light.ttf"; path = "../src/assets/fonts/NunitoSans-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		25BECAACC7174633B120C5C9 /* NunitoSans-SemiBold.ttf */ = {isa = PBXFileReference; name = "NunitoSans-SemiBold.ttf"; path = "../src/assets/fonts/NunitoSans-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		11E4FB79C16F400C94B51FFC /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "BookApp/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		868B5EA933924324A5C89C76 /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "BookApp/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				11E4FB79C16F400C94B51FFC /* BootSplash.storyboard */,
+				868B5EA933924324A5C89C76 /* Colors.xcassets */,
 			);
 			name = BookApp;
 			sourceTree = "<group>";
@@ -196,6 +202,8 @@
 				420F884B76524C2984D62ECA /* NunitoSans-Bold.ttf in Resources */,
 				8D260D44181F46AC9DAAD8C6 /* NunitoSans-Light.ttf in Resources */,
 				496F4DC3AAA44AB8A7392CDC /* NunitoSans-SemiBold.ttf in Resources */,
+				5DD03F107A9E43B1995AAD1E /* BootSplash.storyboard in Resources */,
+				F80C47BD584F4575B1885C5F /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
