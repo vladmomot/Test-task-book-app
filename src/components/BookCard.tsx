@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Book } from '../types';
 import { colors, fonts } from '../theme';
 
@@ -21,10 +20,10 @@ const BookCard: React.FC<BookCardProps> = ({
       onPress={() => onPress(book.id)}
       activeOpacity={0.9}
     >
-      <FastImage 
-        source={{ uri: book.cover_url, priority: FastImage.priority.normal }} 
+      <Image 
+        source={{ uri: book.cover_url }} 
         style={styles.cover}
-        resizeMode={FastImage.resizeMode.cover}
+        resizeMode="cover"
       />
       <View style={styles.info}>
         <Text style={[styles.title, isTextBlack && { color: colors.text }]} numberOfLines={2}>

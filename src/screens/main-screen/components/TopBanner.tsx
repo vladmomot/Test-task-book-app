@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Image,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../../theme';
@@ -141,10 +141,10 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
               activeOpacity={0.9}
               onPress={() => handlePress(slide.book_id)}
             >
-              <FastImage 
-                source={{ uri: slide.cover, priority: FastImage.priority.normal }} 
+              <Image 
+                source={{ uri: slide.cover }} 
                 style={styles.image}
-                resizeMode={FastImage.resizeMode.cover}
+                resizeMode="cover"
               />
             </TouchableOpacity>
           ))}

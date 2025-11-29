@@ -15,13 +15,9 @@ import Animated, {
   interpolate,
   runOnJS,
   SharedValue,
-  createAnimatedComponent,
 } from 'react-native-reanimated';
-import FastImage from 'react-native-fast-image';
 import { Book } from '../../../types';
 import { images, colors, fonts } from '../../../theme';
-
-const AnimatedFastImage = createAnimatedComponent(FastImage);
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -56,10 +52,10 @@ const CarouselCard = ({ book, index, scrollX }: CarouselCardProps) => {
   return (
     <View style={styles.cardWrapper}>
       <Animated.View style={[styles.cardContainer, animatedStyle]}>
-        <AnimatedFastImage
-          source={{ uri: book.cover_url, priority: FastImage.priority.normal }}
+        <Animated.Image
+          source={{ uri: book.cover_url }}
           style={styles.carouselImage}
-          resizeMode={FastImage.resizeMode.cover}
+          resizeMode="cover"
         />
       </Animated.View>
     </View>
