@@ -49,7 +49,9 @@ const DetailsScreen: React.FC = () => {
         .filter((book: Book | undefined): book is Book => book !== undefined);
       setYouWillLikeBooks(youWillLike);
     } catch (error) {
-      console.error('Error loading details data:', error);
+      if (__DEV__) {
+        console.error('Error loading details data:', error);
+      }
     }
   };
 

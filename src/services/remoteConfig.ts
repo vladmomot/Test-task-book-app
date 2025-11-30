@@ -30,7 +30,9 @@ export async function initRemoteConfig() {
 
     await fetchAndActivate(rc);
   } catch (e) {
-    console.error('RC init error:', e);
+    if (__DEV__) {
+      console.error('RC init error:', e);
+    }
   }
 }
 
@@ -38,7 +40,9 @@ export async function updateData() {
   try {
     await fetchAndActivate(rc);
   } catch (e) {
-    console.error('RC update error:', e);
+    if (__DEV__) {
+      console.error('RC update error:', e);
+    }
   }
 }
 
@@ -47,7 +51,9 @@ export function getJsonData(): JsonData {
     const value = getValue(rc, 'json_data').asString();
     return JSON.parse(value);
   } catch (e) {
-    console.error('getJsonData error:', e);
+    if (__DEV__) {
+      console.error('getJsonData error:', e);
+    }
     return {
       books: [],
       top_banner_slides: [],
@@ -61,7 +67,9 @@ export function getDetailsCarousel(): CarouselData {
     const value = getValue(rc, 'details_carousel').asString();
     return JSON.parse(value);
   } catch (e) {
-    console.error('getDetailsCarousel error:', e);
+    if (__DEV__) {
+      console.error('getDetailsCarousel error:', e);
+    }
     return { books: [] };
   }
 }

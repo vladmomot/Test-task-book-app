@@ -29,7 +29,9 @@ const SplashScreen: React.FC = () => {
       try {
         await initRemoteConfig();
       } catch (error) {
-        console.error('Failed to initialize Remote Config:', error);
+        if (__DEV__) {
+          console.error('Failed to initialize Remote Config:', error);
+        }
       }
     };
 

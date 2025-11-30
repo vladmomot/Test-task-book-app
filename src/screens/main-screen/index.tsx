@@ -35,7 +35,9 @@ const MainScreen: React.FC = () => {
       });
       setBooksByGenre(grouped);
     } catch (error) {
-      console.error('Error loading data:', error);
+      if (__DEV__) {
+        console.error('Error loading data:', error);
+      }
     }
   };
 

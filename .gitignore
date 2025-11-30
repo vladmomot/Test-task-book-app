@@ -78,3 +78,7 @@ yarn-error.log
 **/dist/
 dist/
 *.js.map
+
+# Firebase / Google Services
+android/app/google-services.json
+ios/GoogleService-Info.plist
