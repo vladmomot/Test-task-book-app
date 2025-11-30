@@ -52,8 +52,16 @@ import {
 } from '@react-native-firebase/remote-config';
 
 describe('remoteConfig', () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    // Мокаем console.error глобально для всех тестов
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   describe('initRemoteConfig', () => {
@@ -73,15 +81,11 @@ describe('remoteConfig', () => {
     });
 
     it('handles errors gracefully', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
       (fetchAndActivate as jest.Mock).mockRejectedValue(new Error('Test error'));
 
       await initRemoteConfig();
 
       expect(consoleErrorSpy).toHaveBeenCalled();
-
-      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -93,14 +97,11 @@ describe('remoteConfig', () => {
     });
 
     it('handles errors', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       (fetchAndActivate as jest.Mock).mockRejectedValue(new Error('Test error'));
 
       await updateData();
 
       expect(consoleErrorSpy).toHaveBeenCalled();
-
-      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -146,7 +147,6 @@ describe('remoteConfig', () => {
     });
 
     it('returns fallback on validation error', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const invalidData = {
         books: [{ id: 1 }], // Missing required fields
         top_banner_slides: [],
@@ -165,8 +165,6 @@ describe('remoteConfig', () => {
         you_will_like_section: [],
       });
       expect(consoleErrorSpy).toHaveBeenCalled();
-
-      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -206,7 +204,6 @@ describe('remoteConfig', () => {
     });
 
     it('returns fallback on validation error', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const invalidData = {
         books: [{ id: 1 }], // Missing required fields
       };
@@ -219,8 +216,6 @@ describe('remoteConfig', () => {
 
       expect(result).toEqual({ books: [] });
       expect(consoleErrorSpy).toHaveBeenCalled();
-
-      consoleErrorSpy.mockRestore();
     });
   });
 });
