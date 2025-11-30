@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Book } from '../../../types';
-import BookCard from '../../../components/books/BookCard';
-import { fonts, colors } from '../../../theme';
+import { Book } from '@/types';
+import BookCard from '@/components/books/BookCard';
+import { fonts, colors } from '@/theme';
 
 interface YouWillLikeSectionProps {
   books: Book[];

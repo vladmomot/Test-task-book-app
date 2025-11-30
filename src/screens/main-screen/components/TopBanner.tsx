@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { colors } from '../../../theme';
-import { RootStackParamList, TopBannerSlide } from '../../../types';
+import { colors } from '@/theme';
+import { RootStackParamList, TopBannerSlide } from '@/types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 interface TopBannerProps {

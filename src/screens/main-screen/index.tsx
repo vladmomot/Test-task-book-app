@@ -3,11 +3,11 @@ import { View, StyleSheet, ScrollView, Text, RefreshControl } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList, Book, TopBannerSlide } from '../../types';
-import { getJsonData, updateData } from '../../services/remoteConfig';
+import { RootStackParamList, Book, TopBannerSlide } from '@/types';
+import { getJsonData, updateData } from '@/services/remoteConfig';
 import TopBanner from './components/TopBanner';
 import GenreSection from './components/GenreSection';
-import { colors, fonts } from '../../theme';
+import { colors, fonts } from '@/theme';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 

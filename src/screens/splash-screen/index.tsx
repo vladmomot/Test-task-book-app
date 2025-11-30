@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Text, ImageBackground, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types';
-import { initRemoteConfig } from '../../services/remoteConfig';
-import { fonts, images } from '../../theme';
+import { RootStackParamList } from '@/types';
+import { initRemoteConfig } from '@/services/remoteConfig';
+import { fonts, images } from '@/theme';
 import RNBootSplash from 'react-native-bootsplash';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;

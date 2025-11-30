@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Book } from '../../../types';
-import BookCard from '../../../components/books/BookCard';
-import { colors, fonts } from '../../../theme';
+import { Book } from '@/types';
+import BookCard from '@/components/books/BookCard';
+import { colors, fonts } from '@/theme';
 
 interface GenreSectionProps {
   genre: string;

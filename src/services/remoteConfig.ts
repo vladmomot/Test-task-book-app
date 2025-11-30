@@ -6,7 +6,7 @@ import {
   setDefaults,
   setConfigSettings,
 } from '@react-native-firebase/remote-config';
-import { JsonData, CarouselData } from '../types';
+import { JsonData, CarouselData } from '@/types';
 
 const app = getApp();
 const rc = getRemoteConfig(app);

@@ -4,14 +4,14 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
-import { RootStackParamList, Book } from '../../types';
-import { getDetailsCarousel, getJsonData, updateData } from '../../services/remoteConfig';
+import { RootStackParamList, Book } from '@/types';
+import { getDetailsCarousel, getJsonData, updateData } from '@/services/remoteConfig';
 import DetailsCarousel from './components/DetailsCarousel';
 import YouWillLikeSection from './components/YouWillLikeSection';
 import StatsContainer from './components/StatsContainer';
-import PrimaryButton from '../../components/buttons/Button';
-import BackButton from '../../components/buttons/BackButton';
-import { colors, fonts, images } from '../../theme';
+import PrimaryButton from '@/components/buttons/Button';
+import BackButton from '@/components/buttons/BackButton';
+import { colors, fonts, images } from '@/theme';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

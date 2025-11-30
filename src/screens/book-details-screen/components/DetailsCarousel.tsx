@@ -16,8 +16,8 @@ import Animated, {
   runOnJS,
   SharedValue,
 } from 'react-native-reanimated';
-import { Book } from '../../../types';
-import { images, colors, fonts } from '../../../theme';
+import { Book } from '@/types';
+import { images, colors, fonts } from '@/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
