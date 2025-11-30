@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Book } from '../../../types';
-import BookCard from '../../../components/BookCard';
+import BookCard from '../../../components/books/BookCard';
 import { fonts, colors } from '../../../theme';
 
 interface YouWillLikeSectionProps {
@@ -9,10 +9,7 @@ interface YouWillLikeSectionProps {
   onBookPress: (bookId: number) => void;
 }
 
-const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
-  books,
-  onBookPress,
-}) => {
+const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({ books, onBookPress }) => {
   if (books.length === 0) {
     return null;
   }
@@ -26,12 +23,7 @@ const YouWillLikeSection: React.FC<YouWillLikeSectionProps> = ({
         contentContainerStyle={styles.scrollContent}
       >
         {books.map(book => (
-          <BookCard
-            key={book.id}
-            book={book}
-            onPress={onBookPress}
-            isTextBlack
-          />
+          <BookCard key={book.id} book={book} onPress={onBookPress} isTextBlack />
         ))}
       </ScrollView>
     </View>

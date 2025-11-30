@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -44,12 +38,7 @@ const CarouselCard = ({ book, index, scrollX }: CarouselCardProps) => {
     const diff = scrollX.value - ITEM_SIZE * index;
     const distance = Math.abs(diff);
     const scale = interpolate(distance, [0, ITEM_SIZE], [1, SCALE], 'clamp');
-    const opacity = interpolate(
-      distance,
-      [0, ITEM_SIZE * 0.8],
-      [1, 0.7],
-      'clamp',
-    );
+    const opacity = interpolate(distance, [0, ITEM_SIZE * 0.8], [1, 0.7], 'clamp');
 
     return {
       transform: [{ scaleX: scale }, { scaleY: scale }],
@@ -76,11 +65,7 @@ interface DetailsCarouselProps {
   initialBookId?: number;
 }
 
-const DetailsCarousel = ({
-  books,
-  onBookChange,
-  initialBookId,
-}: DetailsCarouselProps) => {
+const DetailsCarousel = ({ books, onBookChange, initialBookId }: DetailsCarouselProps) => {
   const scrollViewRef = useRef<Animated.ScrollView>(null);
   const scrollX = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -106,10 +91,7 @@ const DetailsCarousel = ({
       const newIndex = Math.round(offsetX / ITEM_SIZE);
 
       setCurrentIndex(prev => {
-        const safeIndex = Math.max(
-          0,
-          Math.min(newIndex, reorderedBooks.length - 1),
-        );
+        const safeIndex = Math.max(0, Math.min(newIndex, reorderedBooks.length - 1));
         if (safeIndex !== prev) {
           requestAnimationFrame(() => onBookChange(reorderedBooks[safeIndex]));
         }
@@ -157,12 +139,7 @@ const DetailsCarousel = ({
           contentContainerStyle={styles.scrollContent}
         >
           {reorderedBooks.map((book: Book, index: number) => (
-            <CarouselCard
-              key={book.id}
-              book={book}
-              index={index}
-              scrollX={scrollX}
-            />
+            <CarouselCard key={book.id} book={book} index={index} scrollX={scrollX} />
           ))}
         </Animated.ScrollView>
       </View>

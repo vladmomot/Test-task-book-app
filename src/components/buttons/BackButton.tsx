@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { colors, icons } from '../theme';
+import { colors, icons } from '../../theme';
 
 interface BackButtonProps {
   onPress?: () => void;

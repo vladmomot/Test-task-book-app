@@ -1,12 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  Animated,
-  Text,
-  ImageBackground,
-  Dimensions,
-} from 'react-native';
+import { View, StyleSheet, Animated, Text, ImageBackground, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
@@ -70,24 +63,14 @@ const SplashScreen: React.FC = () => {
   });
 
   return (
-    <ImageBackground
-      source={images.bgSplash}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <ImageBackground
-        source={images.bgSplashHeart}
-        style={styles.heartLayer}
-        resizeMode="cover"
-      >
+    <ImageBackground source={images.bgSplash} style={styles.container} resizeMode="cover">
+      <ImageBackground source={images.bgSplashHeart} style={styles.heartLayer} resizeMode="cover">
         <View style={styles.content}>
           <Text style={styles.splashTitle}>Book App</Text>
           <Text style={styles.splashSubtitle}>Welcome to Book App</Text>
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBarBackground}>
-              <Animated.View
-                style={[styles.progressBarFill, { width: progressWidth }]}
-              />
+              <Animated.View style={[styles.progressBarFill, { width: progressWidth }]} />
             </View>
           </View>
         </View>

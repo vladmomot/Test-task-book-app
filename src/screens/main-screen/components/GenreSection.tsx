@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Book } from '../../../types';
-import BookCard from '../../../components/BookCard';
+import BookCard from '../../../components/books/BookCard';
 import { colors, fonts } from '../../../theme';
 
 interface GenreSectionProps {
@@ -10,11 +10,7 @@ interface GenreSectionProps {
   onBookPress: (bookId: number) => void;
 }
 
-const GenreSection: React.FC<GenreSectionProps> = ({
-  genre,
-  books,
-  onBookPress,
-}) => {
+const GenreSection: React.FC<GenreSectionProps> = ({ genre, books, onBookPress }) => {
   if (books.length === 0) {
     return null;
   }
