@@ -6,7 +6,9 @@ import {
   setDefaults,
   setConfigSettings,
 } from '@react-native-firebase/remote-config';
+import { ZodError } from 'zod';
 import { JsonData, CarouselData } from '@/types';
+import { JsonDataSchema, CarouselDataSchema } from '@/validation/remoteConfigSchemas';
 
 const app = getApp();
 const rc = getRemoteConfig(app);
@@ -49,10 +51,18 @@ export async function updateData() {
 export function getJsonData(): JsonData {
   try {
     const value = getValue(rc, 'json_data').asString();
-    return JSON.parse(value);
+    const parsed = JSON.parse(value);
+    const validated = JsonDataSchema.parse(parsed);
+    return validated;
   } catch (e) {
     if (__DEV__) {
-      console.error('getJsonData error:', e);
+      if (e instanceof ZodError) {
+        console.error('getJsonData validation error:', e.issues);
+      } else if (e instanceof Error) {
+        console.error('getJsonData error:', e.message);
+      } else {
+        console.error('getJsonData unknown error:', e);
+      }
     }
     return {
       books: [],
@@ -65,10 +75,18 @@ export function getJsonData(): JsonData {
 export function getDetailsCarousel(): CarouselData {
   try {
     const value = getValue(rc, 'details_carousel').asString();
-    return JSON.parse(value);
+    const parsed = JSON.parse(value);
+    const validated = CarouselDataSchema.parse(parsed);
+    return validated;
   } catch (e) {
     if (__DEV__) {
-      console.error('getDetailsCarousel error:', e);
+      if (e instanceof ZodError) {
+        console.error('getDetailsCarousel validation error:', e.issues);
+      } else if (e instanceof Error) {
+        console.error('getDetailsCarousel error:', e.message);
+      } else {
+        console.error('getDetailsCarousel unknown error:', e);
+      }
     }
     return { books: [] };
   }

@@ -107,7 +107,19 @@ describe('remoteConfig', () => {
   describe('getJsonData', () => {
     it('returns parsed JSON data', () => {
       const mockData = {
-        books: [{ id: 1 }],
+        books: [
+          {
+            id: 1,
+            name: 'Test Book',
+            author: 'Test Author',
+            summary: 'Test summary',
+            genre: 'Fiction',
+            cover_url: 'https://example.com/cover.jpg',
+            views: '100',
+            likes: '50',
+            quotes: '10',
+          },
+        ],
         top_banner_slides: [],
         you_will_like_section: [],
       };
@@ -132,11 +144,49 @@ describe('remoteConfig', () => {
         you_will_like_section: [],
       });
     });
+
+    it('returns fallback on validation error', () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const invalidData = {
+        books: [{ id: 1 }], // Missing required fields
+        top_banner_slides: [],
+        you_will_like_section: [],
+      };
+
+      (getValue as jest.Mock).mockReturnValue({
+        asString: () => JSON.stringify(invalidData),
+      });
+
+      const result = getJsonData();
+
+      expect(result).toEqual({
+        books: [],
+        top_banner_slides: [],
+        you_will_like_section: [],
+      });
+      expect(consoleErrorSpy).toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
+    });
   });
 
   describe('getDetailsCarousel', () => {
     it('returns correct data', () => {
-      const mockData = { books: [{ id: 1 }] };
+      const mockData = {
+        books: [
+          {
+            id: 1,
+            name: 'Test Book',
+            author: 'Test Author',
+            summary: 'Test summary',
+            genre: 'Fiction',
+            cover_url: 'https://example.com/cover.jpg',
+            views: '100',
+            likes: '50',
+            quotes: '10',
+          },
+        ],
+      };
 
       (getValue as jest.Mock).mockReturnValue({
         asString: () => JSON.stringify(mockData),
@@ -153,6 +203,24 @@ describe('remoteConfig', () => {
       });
 
       expect(getDetailsCarousel()).toEqual({ books: [] });
+    });
+
+    it('returns fallback on validation error', () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const invalidData = {
+        books: [{ id: 1 }], // Missing required fields
+      };
+
+      (getValue as jest.Mock).mockReturnValue({
+        asString: () => JSON.stringify(invalidData),
+      });
+
+      const result = getDetailsCarousel();
+
+      expect(result).toEqual({ books: [] });
+      expect(consoleErrorSpy).toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });

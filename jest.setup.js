@@ -1,4 +1,7 @@
 /* eslint-env jest */
+// Set __DEV__ for tests
+global.__DEV__ = true;
+
 // Mock react-native-bootsplash
 jest.mock('react-native-bootsplash', () => ({
   hide: jest.fn(() => Promise.resolve()),
