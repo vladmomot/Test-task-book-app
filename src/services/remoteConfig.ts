@@ -8,7 +8,10 @@ import {
 } from '@react-native-firebase/remote-config';
 import { ZodError } from 'zod';
 import { JsonData, CarouselData } from '@/types';
-import { JsonDataSchema, CarouselDataSchema } from '@/validation/remoteConfigSchemas';
+import {
+  JsonDataSchema,
+  CarouselDataSchema,
+} from '@/validation/remoteConfigSchemas';
 
 const app = getApp();
 const rc = getRemoteConfig(app);
