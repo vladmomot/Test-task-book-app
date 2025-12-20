@@ -1,5 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle, Dimensions } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+  Dimensions,
+} from 'react-native';
 import { colors, fonts } from '@/theme';
 
 interface PrimaryButtonProps {
@@ -11,9 +18,18 @@ interface PrimaryButtonProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text, onPress, style, textStyle }) => {
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({
+  text,
+  onPress,
+  style,
+  textStyle,
+}) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity
+      style={[styles.button, style]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <Text style={[styles.buttonText, textStyle]}>{text}</Text>
     </TouchableOpacity>
   );

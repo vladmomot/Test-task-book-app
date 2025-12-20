@@ -10,7 +10,11 @@ interface GenreSectionProps {
   onBookPress: (bookId: number) => void;
 }
 
-const GenreSection: React.FC<GenreSectionProps> = ({ genre, books, onBookPress }) => {
+const GenreSection: React.FC<GenreSectionProps> = ({
+  genre,
+  books,
+  onBookPress,
+}) => {
   if (books.length === 0) {
     return null;
   }

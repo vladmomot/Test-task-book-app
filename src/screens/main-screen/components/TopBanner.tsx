@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   View,
   ScrollView,
@@ -52,7 +58,9 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
       setIndex(prev => {
         const next = prev + 1;
         const reachedEnd = next >= slides.length;
-        const scrollTo = reachedEnd ? SLIDE_WIDTH * (slides.length + 1) : SLIDE_WIDTH * (next + 1);
+        const scrollTo = reachedEnd
+          ? SLIDE_WIDTH * (slides.length + 1)
+          : SLIDE_WIDTH * (next + 1);
         scrollRef.current?.scrollTo({ x: scrollTo, animated: true });
         return reachedEnd ? 0 : next;
       });
@@ -144,13 +152,20 @@ const TopBanner: React.FC<TopBannerProps> = ({ slides }) => {
               activeOpacity={0.9}
               onPress={() => handlePress(slide.book_id)}
             >
-              <Image source={{ uri: slide.cover }} style={styles.image} resizeMode="cover" />
+              <Image
+                source={{ uri: slide.cover }}
+                style={styles.image}
+                resizeMode="cover"
+              />
             </TouchableOpacity>
           ))}
         </ScrollView>
         <View style={styles.indicators}>
           {slides.map((_, i) => (
-            <View key={i} style={[styles.dot, i === index && styles.dotActive]} />
+            <View
+              key={i}
+              style={[styles.dot, i === index && styles.dotActive]}
+            />
           ))}
         </View>
       </View>

@@ -11,10 +11,21 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({ book, onPress, isTextBlack }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() => onPress(book.id)} activeOpacity={0.9}>
-      <Image source={{ uri: book.cover_url }} style={styles.cover} resizeMode="cover" />
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => onPress(book.id)}
+      activeOpacity={0.9}
+    >
+      <Image
+        source={{ uri: book.cover_url }}
+        style={styles.cover}
+        resizeMode="cover"
+      />
       <View style={styles.info}>
-        <Text style={[styles.title, isTextBlack && { color: colors.text }]} numberOfLines={2}>
+        <Text
+          style={[styles.title, isTextBlack && { color: colors.text }]}
+          numberOfLines={2}
+        >
           {book.name}
         </Text>
       </View>
