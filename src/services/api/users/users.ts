@@ -1,7 +1,6 @@
 import { User } from '@/types';
 import axios from 'axios';
-
-const API_URL = '  https://convenient-inequitably-hermelinda.ngrok-free.dev';
+import { API_URL } from 'config';
 
 const getUsers = async () => {
   try {
