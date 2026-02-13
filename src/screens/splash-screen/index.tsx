@@ -7,13 +7,19 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  createNavigationContainerRef,
+  useNavigation,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { initRemoteConfig } from '@/services/remoteConfig';
 import { fonts, images } from '@/theme';
 import RNBootSplash from 'react-native-bootsplash';
+import * as Sentry from '@sentry/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
+export const navigationRef = createNavigationContainerRef();
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -22,6 +28,41 @@ const PROGRESS_WIDTH = SCREEN_WIDTH - 64;
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  if (!__DEV__) {
+    Sentry.init({
+      dsn: 'https://9827a0d457abe75ac31c314c4b84507a@o4510809804177408.ingest.de.sentry.io/4510809814990928',
+      enableLogs: true,
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+      environment: 'production',
+      sendDefaultPii: true,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+      integrations: [
+        Sentry.reactNativeTracingIntegration(),
+        Sentry.hermesProfilingIntegration(),
+        Sentry.mobileReplayIntegration(),
+        Sentry.reactNavigationIntegration(),
+      ],
+    });
+  } else {
+    Sentry.init({
+      dsn: 'https://9827a0d457abe75ac31c314c4b84507a@o4510809804177408.ingest.de.sentry.io/4510809814990928',
+      enableLogs: true,
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+      environment: 'development',
+      sendDefaultPii: true,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+      integrations: [
+        Sentry.reactNativeTracingIntegration(),
+        Sentry.mobileReplayIntegration(),
+        Sentry.reactNavigationIntegration(),
+      ],
+    });
+  }
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -41,6 +82,21 @@ const SplashScreen: React.FC = () => {
         }
       }
     };
+
+    const channelCreate = async () => {
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+        importance: AndroidImportance.HIGH,
+      });
+    };
+
+    const requestPermission = async () => {
+      await notifee.requestPermission();
+    };
+
+    channelCreate();
+    requestPermission();
 
     Animated.loop(
       Animated.sequence([

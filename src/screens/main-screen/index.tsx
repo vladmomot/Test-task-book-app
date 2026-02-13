@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   RefreshControl,
+  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +15,9 @@ import { getJsonData, updateData } from '@/services/remoteConfig';
 import TopBanner from './components/TopBanner';
 import GenreSection from './components/GenreSection';
 import { colors, fonts } from '@/theme';
+import * as Sentry from '@sentry/react-native';
+import notifee from '@notifee/react-native';
+import NativeFlashlight from 'specs/NativeFlashlight';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -22,6 +26,7 @@ const MainScreen: React.FC = () => {
   const [topBannerSlides, setTopBannerSlides] = useState<TopBannerSlide[]>([]);
   const [booksByGenre, setBooksByGenre] = useState<Record<string, Book[]>>({});
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [on, setOn] = useState<boolean>(false);
 
   useEffect(() => {
     loadData();
@@ -54,8 +59,10 @@ const MainScreen: React.FC = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      await updateData();
-      loadData();
+      await Sentry.startSpan({ name: 'Important Function' }, async () => {
+        await updateData();
+        loadData();
+      });
     } catch {
       setRefreshing(false);
     }
@@ -79,6 +86,34 @@ const MainScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
+          <Button
+            title="Show Notification"
+            onPress={async () => {
+              await notifee.displayNotification({
+                title: 'Вас ктось лайкнув!',
+                body: 'Це ваша кохана - Каролінка',
+                android: {
+                  channelId: 'default',
+                  pressAction: {
+                    id: 'default',
+                  },
+                },
+              });
+            }}
+          />
+          <Button
+            title="On//Off Flashlight"
+            onPress={async () => {
+              await NativeFlashlight.toggleFlashlight(!on);
+              setOn(!on);
+            }}
+          />
+          <Button
+            title="Go to Users"
+            onPress={async () => {
+              navigation.navigate('Users');
+            }}
+          />
         </View>
         <TopBanner slides={topBannerSlides} />
         {Object.keys(booksByGenre).length === 0 ? (
@@ -131,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainScreen;
+export default Sentry.wrap(MainScreen);

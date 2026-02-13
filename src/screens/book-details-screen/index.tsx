@@ -26,6 +26,7 @@ import StatsContainer from './components/StatsContainer';
 import PrimaryButton from '@/components/buttons/Button';
 import BackButton from '@/components/buttons/BackButton';
 import { colors, fonts, images } from '@/theme';
+import * as Sentry from '@sentry/react-native';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'BookDetails'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -228,4 +229,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailsScreen;
+export default Sentry.withProfiler(DetailsScreen);

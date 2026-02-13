@@ -1,0 +1,10 @@
+ {
+    "codegenConfig": {
+     "name": "NativeFlashlightSpec",
+     "type": "modules",
+     "jsSrcsDir": "specs",
+     "android": {
+       "javaPackageName":  "com.books.app"
+     }
+   }
+}
