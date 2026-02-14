@@ -5,7 +5,6 @@ import {
   ScrollView,
   Text,
   RefreshControl,
-  Button,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +17,7 @@ import { colors, fonts } from '@/theme';
 import * as Sentry from '@sentry/react-native';
 import notifee from '@notifee/react-native';
 import NativeFlashlight from 'specs/NativeFlashlight';
+import PrimaryButton from '@/components/buttons/Button';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -86,34 +86,36 @@ const MainScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
-          <Button
-            title="Show Notification"
-            onPress={async () => {
-              await notifee.displayNotification({
-                title: 'Вас ктось лайкнув!',
-                body: 'Це ваша кохана - Каролінка',
-                android: {
-                  channelId: 'default',
-                  pressAction: {
-                    id: 'default',
+          <View style={styles.buttonContainer}>
+            <PrimaryButton
+              title="Show Notification"
+              onPress={async () => {
+                await notifee.displayNotification({
+                  title: 'Вас ктось лайкнув!',
+                  body: 'Це ваша кохана - Каролінка',
+                  android: {
+                    channelId: 'default',
+                    pressAction: {
+                      id: 'default',
+                    },
                   },
-                },
-              });
-            }}
-          />
-          <Button
-            title="On//Off Flashlight"
-            onPress={async () => {
-              await NativeFlashlight.toggleFlashlight(!on);
-              setOn(!on);
-            }}
-          />
-          <Button
-            title="Go to Users"
-            onPress={async () => {
-              navigation.navigate('Users');
-            }}
-          />
+                });
+              }}
+            />
+            <PrimaryButton
+              title="On//Off Flashlight"
+              onPress={async () => {
+                await NativeFlashlight.toggleFlashlight(!on);
+                setOn(!on);
+              }}
+            />
+            <PrimaryButton
+              title="Go to Users"
+              onPress={async () => {
+                navigation.navigate('Users');
+              }}
+            />
+          </View>
         </View>
         <TopBanner slides={topBannerSlides} />
         {Object.keys(booksByGenre).length === 0 ? (
@@ -145,6 +147,11 @@ const styles = StyleSheet.create({
     minHeight: '75%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    marginTop: 16,
+    flexDirection: 'column',
+    gap: 8,
   },
   emptyText: {
     ...fonts.h1,

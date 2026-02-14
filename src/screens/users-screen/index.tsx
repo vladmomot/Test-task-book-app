@@ -11,20 +11,19 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
-  Button,
   Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@/types';
+//import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+//import { RootStackParamList } from '@/types';
 import { colors, fonts } from '@/theme';
 import { randomString } from 'zod/v4/core/util.cjs';
+import PrimaryButton from '@/components/buttons/Button';
+import BackButton from '@/components/buttons/BackButton';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Users'>;
+//type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Users'>;
 
 const UsersScreen: React.FC = () => {
-  const navigation = useNavigation<NavigationProp>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const usersQueryOptions = () =>
@@ -33,7 +32,7 @@ const UsersScreen: React.FC = () => {
       queryFn: getUsers,
     });
 
-  const { data: users, isPending } = useQuery(usersQueryOptions());
+  const { data: users, isPending, isError } = useQuery(usersQueryOptions());
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -114,25 +113,26 @@ const UsersScreen: React.FC = () => {
         }
       >
         <View style={styles.header}>
-          <Button
-            title="Go back to Main"
-            onPress={async () => navigation.navigate('Main')}
-          />
-          <Button title="Create User" onPress={handleCreateUser} />
-          <Button
-            title="Delete random user"
-            onPress={() => {
-              if (users && users.length > 0) {
-                const randomUser =
-                  users[Math.floor(Math.random() * users.length)];
-                handleDeleteUser(randomUser.id);
-              }
-            }}
-          />
+          <BackButton />
+          <View style={styles.buttonContainer}>
+            <PrimaryButton title="Create User" onPress={handleCreateUser} />
+            <PrimaryButton
+              title="Delete random user"
+              onPress={() => {
+                if (users && users.length > 0) {
+                  const randomUser =
+                    users[Math.floor(Math.random() * users.length)];
+                  handleDeleteUser(randomUser.id);
+                }
+              }}
+            />
+          </View>
         </View>
         <View style={styles.header}>
-          {isPending ? (
-            <Text style={styles.userText}>Loading...</Text>
+          {isError ? (
+            <Text style={styles.userText}>Error loading users</Text>
+          ) : isPending ? (
+            <Text style={styles.emailText}>Loading...</Text>
           ) : (
             <View>
               {users?.map(user => (
@@ -164,6 +164,11 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 28,
     paddingHorizontal: 16,
+  },
+  buttonContainer: {
+    marginTop: 16,
+    flexDirection: 'column',
+    gap: 8,
   },
   headerTitle: {
     ...fonts.h1,

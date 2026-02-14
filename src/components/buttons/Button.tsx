@@ -10,7 +10,7 @@ import {
 import { colors, fonts } from '@/theme';
 
 interface PrimaryButtonProps {
-  text: string;
+  title: string;
   onPress?: () => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
@@ -19,7 +19,7 @@ interface PrimaryButtonProps {
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const PrimaryButton: React.FC<PrimaryButtonProps> = ({
-  text,
+  title,
   onPress,
   style,
   textStyle,
@@ -30,7 +30,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
 };

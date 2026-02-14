@@ -163,7 +163,7 @@ const DetailsScreen: React.FC = () => {
             onBookPress={handleBookPress}
           />
           <PrimaryButton
-            text="Read Now"
+            title="Read Now"
             style={styles.readButton}
             onPress={handleReadNowPress}
           />
