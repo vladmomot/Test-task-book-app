@@ -20,8 +20,9 @@ import { colors, fonts } from '@/theme';
 import { randomString } from 'zod/v4/core/util.cjs';
 import PrimaryButton from '@/components/buttons/Button';
 import BackButton from '@/components/buttons/BackButton';
-
+import styled from 'styled-components/native';
 //type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Users'>;
+import StyledButtonPrimary from '@/components/buttons/StyledPrimaryButton';
 
 const UsersScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -97,6 +98,49 @@ const UsersScreen: React.FC = () => {
     }
   };
 
+  const StyledButton = styled(PrimaryButton).attrs<{ $rotate?: string }>(
+    props => ({
+      title: props.title || 'Default Title',
+      onPress: props.onPress || (() => {}),
+      $rotate: props.$rotate || '3deg',
+    }),
+  )`
+    background-color: #ff6f91;
+    margin: 10px;
+    transform: rotate(${props => props.$rotate});
+  `;
+
+  const StyledButtonProps = styled(PrimaryButton)<{ $primary?: boolean }>`
+    background-color: ${props => (props.$primary ? '#BF4F74' : '#d3d3d3')};
+    height: ${props => (props.$primary ? 40 : 20)}px;
+    margin-bottom: 10px;
+    color: 'red';
+    border-radius: 30px;
+  `;
+
+  // Дополнение для React
+  /*
+      &:hover {
+      color: red; // <Button> when hovered
+    }
+
+    & ~ & {
+      background: tomato; // <Button> as a sibling of <Button>, but maybe not directly next to it
+    }
+
+    & + & {
+      background: lime; // <Button> next to <Button>
+    }
+
+    &.something {
+      background: orange; // <Button> tagged with an additional CSS class ".something"
+    }
+
+    .something-else & {
+      border: 1px solid; // <Button> inside another element labeled ".something-else"
+    } 
+   */
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -114,9 +158,17 @@ const UsersScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <BackButton />
+          <StyledButtonProps
+            title="Go to Main"
+            onPress={() => {}}
+            textStyle={{ color: colors.primary, fontSize: 20 }}
+          />
+          <StyledButtonProps $primary title="Go to Main" onPress={() => {}} />
+          <StyledButtonPrimary title="Secondary" variant="secondary" />
+          <StyledButtonPrimary title="Outline" variant="outline" />
           <View style={styles.buttonContainer}>
-            <PrimaryButton title="Create User" onPress={handleCreateUser} />
-            <PrimaryButton
+            <StyledButton title="Create User" onPress={handleCreateUser} />
+            <StyledButton
               title="Delete random user"
               onPress={() => {
                 if (users && users.length > 0) {
@@ -125,6 +177,7 @@ const UsersScreen: React.FC = () => {
                   handleDeleteUser(randomUser.id);
                 }
               }}
+              $rotate="-3deg"
             />
           </View>
         </View>

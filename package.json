@@ -25,6 +25,7 @@
     "@tanstack/react-query": "^5.90.21",
     "@types/axios": "^0.9.36",
     "@types/json-server": "^0.14.8",
+    "@types/styled-components": "^5.1.36",
     "axios": "^1.13.5",
     "json-server": "^0.17.4",
     "react": "19.1.1",
@@ -37,7 +38,9 @@
     "react-native-svg": "^15.15.0",
     "react-native-toast-message": "^2.3.3",
     "react-native-worklets": "^0.7.1",
-    "zod": "^4.1.13"
+    "styled-components": "^6.3.9",
+    "zod": "^4.1.13",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
