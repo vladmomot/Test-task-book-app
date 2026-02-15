@@ -83,16 +83,16 @@ const SplashScreen: React.FC = () => {
       }
     };
 
+    const requestPermission = async () => {
+      await notifee.requestPermission();
+    };
+
     const channelCreate = async () => {
       await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
         importance: AndroidImportance.HIGH,
       });
-    };
-
-    const requestPermission = async () => {
-      await notifee.requestPermission();
     };
 
     channelCreate();

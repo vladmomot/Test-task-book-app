@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   RefreshControl,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +19,12 @@ import * as Sentry from '@sentry/react-native';
 import notifee from '@notifee/react-native';
 import NativeFlashlight from 'specs/NativeFlashlight';
 import PrimaryButton from '@/components/buttons/Button';
+import CustomSlider from '@/components/slider';
+import Animated, {
+  useAnimatedProps,
+  useSharedValue,
+} from 'react-native-reanimated';
+import Gallery from '@/components/gallery';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -69,8 +76,24 @@ const MainScreen: React.FC = () => {
     setRefreshing(false);
   };
 
+  const sliderValue = useSharedValue(50);
+
+  let myText = 'Я люблю тебе понад усе на світі моя кохана <3';
+
+  const animatedProps = useAnimatedProps(() => {
+    const progress = sliderValue.value / 100;
+    const lettersCount = Math.floor(progress * myText.length);
+
+    return {
+      text: myText.slice(0, lettersCount),
+    };
+  });
+
+  const AnimatedTextInput = Animated.createAnimatedComponent(TextInput) as any;
+
   return (
     <SafeAreaView style={styles.container}>
+      <Gallery />
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -86,6 +109,18 @@ const MainScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
+          <AnimatedTextInput
+            editable={false}
+            animatedProps={animatedProps}
+            style={styles.headerTitle}
+          />
+          <CustomSlider
+            minimumValue={0}
+            maximumValue={100}
+            isVertical={false}
+            sharedValue={sliderValue}
+            style={{ marginTop: 10 }}
+          />
           <View style={styles.buttonContainer}>
             <PrimaryButton
               title="Show Notification"
@@ -113,6 +148,12 @@ const MainScreen: React.FC = () => {
               title="Go to Users"
               onPress={async () => {
                 navigation.navigate('Users');
+              }}
+            />
+            <PrimaryButton
+              title="Go to Camera"
+              onPress={async () => {
+                navigation.navigate('Camera');
               }}
             />
           </View>
@@ -169,6 +210,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     ...fonts.h1,
+    height: 40,
     color: colors.primary,
   },
 });

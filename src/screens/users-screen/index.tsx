@@ -23,6 +23,7 @@ import BackButton from '@/components/buttons/BackButton';
 import styled from 'styled-components/native';
 //type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Users'>;
 import StyledButtonPrimary from '@/components/buttons/StyledPrimaryButton';
+import * as Sentry from '@sentry/react-native';
 
 const UsersScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -241,4 +242,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UsersScreen;
+export default Sentry.wrap(UsersScreen);
