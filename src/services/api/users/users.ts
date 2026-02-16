@@ -1,4 +1,4 @@
-import { User } from '@/types';
+import { EditableUser, User } from '@/types';
 import axios from 'axios';
 import { API_URL } from 'config';
 
@@ -22,7 +22,7 @@ const getUserById = async (id: number) => {
   }
 };
 
-const createUser = async (user: User) => {
+const createUser = async (user: EditableUser) => {
   try {
     const response = await axios.post(`${API_URL}/users`, user);
     return response.data;

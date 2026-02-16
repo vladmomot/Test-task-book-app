@@ -20,11 +20,16 @@ import notifee from '@notifee/react-native';
 import NativeFlashlight from 'specs/NativeFlashlight';
 import PrimaryButton from '@/components/buttons/Button';
 import CustomSlider from '@/components/slider';
+import RNShake from 'react-native-shake';
 import Animated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated';
-import Gallery from '@/components/gallery';
+import Collapsible from 'react-native-collapsible';
+import Image from 'react-native-image-progress';
+import * as Progress from 'react-native-progress';
+import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import { enableLocation, saveKeychainData } from '@/utils';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Main'>;
 
@@ -34,9 +39,23 @@ const MainScreen: React.FC = () => {
   const [booksByGenre, setBooksByGenre] = useState<Record<string, Book[]>>({});
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [on, setOn] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsCollapsed(false);
+    }, 1);
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const subscription = RNShake.addListener(() => {
+      setImageUrl(
+        `https://loremflickr.com/640/480/${arrayOfImageUrls[Math.floor(Math.random() * arrayOfImageUrls.length - 1)]}?cacheBust=${Date.now()}`,
+      );
+    });
+    return () => subscription.remove();
   }, []);
 
   const loadData = async () => {
@@ -67,17 +86,21 @@ const MainScreen: React.FC = () => {
     setRefreshing(true);
     try {
       await Sentry.startSpan({ name: 'Important Function' }, async () => {
+        await enableLocation();
+        await saveKeychainData();
         await updateData();
         loadData();
       });
-    } catch {
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Error refreshing data:', error);
+      }
       setRefreshing(false);
     }
     setRefreshing(false);
   };
 
-  const sliderValue = useSharedValue(50);
-
+  const sliderValue = useSharedValue(0);
   let myText = 'Я люблю тебе понад усе на світі моя кохана <3';
 
   const animatedProps = useAnimatedProps(() => {
@@ -89,11 +112,41 @@ const MainScreen: React.FC = () => {
     };
   });
 
+  const arrayOfImageUrls = [
+    'dogs',
+    'cats',
+    'horses',
+    'parrots',
+    'chickens',
+    'ducks',
+    'rabbits',
+    'bunnies',
+    'squirrels',
+    'foxes',
+    'home',
+    'people',
+    'karolina',
+    'puppy',
+    'kitten',
+    'penguin',
+    'panda',
+    'koala',
+    'tiger',
+    'lion',
+    'elephant',
+    'random',
+  ];
+
   const AnimatedTextInput = Animated.createAnimatedComponent(TextInput) as any;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Gallery />
+      <View
+        style={[StyleSheet.absoluteFill, { top: 50, left: 100, zIndex: 999 }]}
+        pointerEvents="none"
+      >
+        <FontAwesome6 name="heart" size={50} color={colors.primary} />
+      </View>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -109,54 +162,96 @@ const MainScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Library</Text>
-          <AnimatedTextInput
-            editable={false}
-            animatedProps={animatedProps}
-            style={styles.headerTitle}
+          <PrimaryButton
+            title="Collapse content"
+            onPress={async () => {
+              setIsCollapsed(!isCollapsed);
+            }}
           />
-          <CustomSlider
-            minimumValue={0}
-            maximumValue={100}
-            isVertical={false}
-            sharedValue={sliderValue}
-            style={{ marginTop: 10 }}
-          />
-          <View style={styles.buttonContainer}>
-            <PrimaryButton
-              title="Show Notification"
-              onPress={async () => {
-                await notifee.displayNotification({
-                  title: 'Вас ктось лайкнув!',
-                  body: 'Це ваша кохана - Каролінка',
-                  android: {
-                    channelId: 'default',
-                    pressAction: {
-                      id: 'default',
+          <Collapsible collapsed={isCollapsed}>
+            <View style={styles.buttonContainer}>
+              <PrimaryButton
+                title="Show Notification"
+                onPress={async () => {
+                  await notifee.displayNotification({
+                    title: 'Вас ктось лайкнув!',
+                    body: 'Це ваша кохана - Каролінка',
+                    android: {
+                      channelId: 'default',
+                      pressAction: {
+                        id: 'default',
+                      },
                     },
-                  },
-                });
-              }}
-            />
+                  });
+                }}
+              />
+              <PrimaryButton
+                title="On//Off Flashlight"
+                onPress={async () => {
+                  await NativeFlashlight.toggleFlashlight(!on);
+                  setOn(!on);
+                }}
+              />
+              <PrimaryButton
+                title="Go to Users"
+                onPress={async () => {
+                  navigation.navigate('Users');
+                }}
+              />
+              <PrimaryButton
+                title="Go to Camera"
+                onPress={async () => {
+                  navigation.navigate('Camera');
+                }}
+              />
+              <CustomSlider
+                minimumValue={0}
+                maximumValue={100}
+                isVertical={false}
+                sharedValue={sliderValue}
+              />
+              <AnimatedTextInput
+                editable={false}
+                animatedProps={animatedProps}
+                style={styles.headerTitle}
+              />
+            </View>
+            {imageUrl && (
+              <View
+                style={{
+                  width: '100%',
+                  height: 240,
+                  borderRadius: 16,
+                  overflow: 'hidden',
+                }}
+              >
+                <Image
+                  source={{ uri: imageUrl }}
+                  indicator={Progress.CircleSnail}
+                  indicatorProps={{
+                    size: 80,
+                    borderWidth: 1,
+                    borderRadius: 80,
+                    borderColor: colors.button,
+                    color: colors.button,
+                  }}
+                  style={{
+                    width: '100%',
+                    height: 240,
+                  }}
+                />
+              </View>
+            )}
             <PrimaryButton
-              title="On//Off Flashlight"
+              title="Update Image"
               onPress={async () => {
-                await NativeFlashlight.toggleFlashlight(!on);
-                setOn(!on);
+                setImageUrl(
+                  `https://loremflickr.com/640/480/${arrayOfImageUrls[Math.floor(Math.random() * arrayOfImageUrls.length - 1)]}?cacheBust=${Date.now()}`,
+                );
               }}
+              style={{ marginVertical: 10 }}
             />
-            <PrimaryButton
-              title="Go to Users"
-              onPress={async () => {
-                navigation.navigate('Users');
-              }}
-            />
-            <PrimaryButton
-              title="Go to Camera"
-              onPress={async () => {
-                navigation.navigate('Camera');
-              }}
-            />
-          </View>
+          </Collapsible>
         </View>
         <TopBanner slides={topBannerSlides} />
         {Object.keys(booksByGenre).length === 0 ? (

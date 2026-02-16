@@ -6,6 +6,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
     'react-native/no-inline-styles': 'off',
     'prettier/prettier': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
     'react/jsx-wrap-multilines': [
       'error',
       {
