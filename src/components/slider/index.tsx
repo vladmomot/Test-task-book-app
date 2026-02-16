@@ -82,8 +82,6 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
     padding: 5px;
   `;
 
-  //http://loremflickr.com/640/480/dog
-
   return (
     <GestureHandlerRootView style={[styles.container, style]}>
       <StyledContainer
