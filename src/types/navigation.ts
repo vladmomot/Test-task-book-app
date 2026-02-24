@@ -4,4 +4,5 @@ export type RootStackParamList = {
   BookDetails: { bookId: number };
   Users: undefined;
   Camera: undefined;
+  Video: undefined;
 };

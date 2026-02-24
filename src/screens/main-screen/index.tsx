@@ -204,6 +204,12 @@ const MainScreen: React.FC = () => {
                   navigation.navigate('Camera');
                 }}
               />
+              <PrimaryButton
+                title="Go to Video"
+                onPress={async () => {
+                  navigation.navigate('Video');
+                }}
+              />
               <CustomSlider
                 minimumValue={0}
                 maximumValue={100}

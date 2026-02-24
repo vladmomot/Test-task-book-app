@@ -10,6 +10,7 @@ import MainScreen from '@/screens/main-screen';
 import BookDetailsScreen from '@/screens/book-details-screen';
 import UsersScreen from '@/screens/users-screen';
 import CameraScreen from '@/screens/camera-screen';
+import VideoScreen from '@/screens/video-screen';
 import NetInfo from '@react-native-community/netinfo';
 import { onlineManager } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react-native';
@@ -43,6 +44,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="BookDetails" component={BookDetailsScreen} />
         <Stack.Screen name="Users" component={UsersScreen} />
         <Stack.Screen name="Camera" component={CameraScreen} />
+        <Stack.Screen name="Video" component={VideoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
